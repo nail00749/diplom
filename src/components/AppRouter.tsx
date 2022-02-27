@@ -1,33 +1,56 @@
-import React, {FC, useState} from 'react';
-import {Route, Routes} from "react-router-dom";
-import { publicRoute } from '../router/router';
+import React, {FC} from 'react';
+import {Route, Routes, BrowserRouter, Navigate} from "react-router-dom";
+import {authRoute, publicRoute} from '../router/router';
+import {useTypedSelector} from "../hooks/redux/useTypedSelector";
+import NavigationMenu from "./NavigationMenu";
+import {Box, useMediaQuery} from '@mui/material';
 
 const AppRouter: FC = () => {
-    const [isAuth, setIsAuth] = useState<boolean>(false);
+    const {isAuthenticated} = useTypedSelector(state => state.userReducer)
+    const matches = useMediaQuery('(max-width: 425px)')
 
     return (
-        <div>
-
+        <BrowserRouter>
+            {isAuthenticated && <NavigationMenu/>}
             {
-                isAuth ?
-                    <Routes>
-
-                    </Routes> :
+                !isAuthenticated ?
                     <Routes>
                         {
                             publicRoute.map(route =>
                                 <Route
-                                    path={route.path}
-                                    index={route.exact}
-                                    element={route.component}
-                                    key={route.path}
+                                    path = {route.path}
+                                    index = {route.exact}
+                                    element = {<route.component/>}
+                                    key = {route.path}
                                 />
                             )
                         }
-                    </Routes>
+                        <Route
+                            path = '*'
+                            element = {<Navigate to = '/'/>}
+                        />
+                    </Routes> :
+                    <Box>
+                        <Routes>
+                            {
+                                authRoute.map(route =>
+                                    <Route
+                                        path = {route.path}
+                                        index = {route.exact}
+                                        element = {<route.component/>}
+                                        key = {route.path}
+                                    />
+                                )
+                            }
+                            <Route
+                                path = '*'
+                                element = {<Navigate to = '/'/>}
+                            />
+                        </Routes>
+                    </Box>
             }
+        </BrowserRouter>
 
-        </div>
     );
 };
 

@@ -9,17 +9,14 @@ import {
     InputLabel
 } from "@mui/material";
 import {AccountCircle, VisibilityOff, Visibility} from '@mui/icons-material';
-import {useDispatch} from "react-redux";
-import {fetchAuth} from "../store/reducers/user/ActionCreator";
 
 type FormProps = {
     setIsLogin: () => void
 }
 
-const AuthForm: FC<FormProps> = (props) => {
+const RegisterForm: FC<FormProps> = (props) => {
     const [login, setLogin] = useState<string>('');
     const [password, setPassword] = useState<string>('');
-    const dispatch = useDispatch()
 
     const [showPassword, setShowPassword] = useState<boolean>(false);
 
@@ -32,12 +29,10 @@ const AuthForm: FC<FormProps> = (props) => {
     }
 
     const sendData = async () => {
-        //todo
         const data = {
             login,
             password
         }
-        dispatch(fetchAuth())
     }
 
     const handlerShowPassword = () => {
@@ -107,7 +102,6 @@ const AuthForm: FC<FormProps> = (props) => {
             >
                 <Button
                     variant = {'contained'}
-                    onClick={sendData}
                 >
                     Auth
                 </Button>
@@ -121,12 +115,11 @@ const AuthForm: FC<FormProps> = (props) => {
                         props.setIsLogin()
                     }}
                 >
-                    {'Sign up'}
+                    {'Log in'}
                 </Button>
             </Box>
         </>
-
     );
 };
 
-export default AuthForm;
+export default RegisterForm;
