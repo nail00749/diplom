@@ -1,5 +1,5 @@
 import React, {FC, useState} from 'react';
-import {Dialog, Slide, Typography, IconButton, Box, TextField, Button} from "@mui/material";
+import {Dialog, Slide, Typography, IconButton, Box, TextField, Button, MenuItem} from "@mui/material";
 import {TransitionProps} from '@mui/material/transitions';
 import CloseIcon from '@mui/icons-material/Close';
 import SaveIcon from '@mui/icons-material/Save';
@@ -18,7 +18,7 @@ interface CourseCreateProps {
 const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
     const [name, setName] = useState({text: '', error: false});
     const [about, setAbout] = useState({text: '', error: false});
-
+    const [course, setCourse] = useState({value: '', error: false});
 
     const saveCourse = async () => {
         let isError = false
@@ -30,6 +30,10 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
             isError = true
             setAbout(prev => ({...prev, error: true}))
         }
+        if(!course.value){
+            isError = true
+            setCourse(prev => ({...prev, error: true}))
+        }
 
         if (isError) {
             return
@@ -37,6 +41,7 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
         //todo api
         setName({text: '', error: false})
         setAbout({text: '', error: false})
+        setCourse({value: '', error: false})
         onClose()
     };
 
@@ -46,6 +51,10 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
 
     const handlerAbout = (e: React.ChangeEvent<HTMLInputElement>) => {
         setAbout(prev => ({...prev, text: e.target.value, error: false}))
+    };
+
+    const handleCourse = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setCourse({...course, value: e.target.value, error: false})
     };
 
     return (
@@ -72,7 +81,7 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
                         <CloseIcon/>
                     </IconButton>
                     <Typography variant = 'h5' component = 'span'>
-                        Create course
+                        Create lesson
                     </Typography>
                 </Box>
                 <Box mb = {3}>
@@ -94,6 +103,25 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
                         value = {about.text}
                         error = {about.error}
                     />
+                </Box>
+                <Box mb = {3}>
+                    <TextField
+                        id = "outlined-select-currency"
+                        select
+                        variant = 'filled'
+                        label = "Course"
+                        value = {course.value}
+                        onChange = {handleCourse}
+                        required
+                        fullWidth
+                        error={course.error}
+                    >
+                        {[1, 2, 3].map((option) => (
+                            <MenuItem key = {option} value = {option}>
+                                {option}
+                            </MenuItem>
+                        ))}
+                    </TextField>
                 </Box>
                 <Button
                     variant = 'outlined'

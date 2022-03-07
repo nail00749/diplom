@@ -2,7 +2,7 @@ import React, {FC, useState} from 'react';
 import {Link} from 'react-router-dom'
 import {Box, SwipeableDrawer, Button, List, ListItemIcon, ListItemText, ListItemButton} from '@mui/material';
 import DehazeIcon from '@mui/icons-material/Dehaze';
-import {linksNavigation} from "../router/router";
+import {linksNavigationUser, linksNavigationAdmin} from "../router/router";
 import SwitchToggleTheme from "./SwitchToggleTheme";
 
 const NavigationMenu: FC = () => {
@@ -40,7 +40,7 @@ const NavigationMenu: FC = () => {
                     >
                         <List>
                             {
-                                linksNavigation.map((item, index) =>
+                                linksNavigationUser.map((item, index) =>
                                     <Link
                                         key = {item.text}
                                         to = {item.link}
@@ -54,6 +54,29 @@ const NavigationMenu: FC = () => {
 												<ListItemIcon>
 													<item.icon/>
 												</ListItemIcon>
+                                            }
+                                            <ListItemText
+                                                primary = {item.text}
+                                            />
+                                        </ListItemButton>
+                                    </Link>
+                                )
+                            }
+                            {
+                                linksNavigationAdmin.map((item, index) =>
+                                    <Link
+                                        key = {item.text}
+                                        to = {item.link}
+                                    >
+                                        <ListItemButton
+                                            selected = {selectedLinkIndex === index + linksNavigationUser.length}
+                                            onClick = {() => setSelectedLinkIndex(index+linksNavigationUser.length)}
+                                        >
+                                            {
+                                                item.icon &&
+					                            <ListItemIcon>
+						                            <item.icon/>
+					                            </ListItemIcon>
                                             }
                                             <ListItemText
                                                 primary = {item.text}

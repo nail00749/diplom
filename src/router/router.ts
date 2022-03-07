@@ -33,11 +33,15 @@ export enum RouteNames {
     PROFILE = '/profile',
 }
 
-export const linksNavigation: ILink[] = [
+export const linksNavigationUser: ILink[] = [
     {link: RouteNames.HOME, text: 'HOME', icon: HomeIcon},
-    {link: RouteNames.ADMIN, text: 'ADMIN', icon: AdminPanelSettingsIcon},
+
     {link: RouteNames.PROFILE, text: 'PROFILE', icon: AccountBoxIcon},
     {link: RouteNames.STREAM, text: 'STREAM', icon: SettingsInputAntennaIcon}
+]
+
+export const linksNavigationAdmin: ILink[] = [
+    {link: RouteNames.ADMIN, text: 'ADMIN', icon: AdminPanelSettingsIcon},
 ]
 
 export const publicRoute: IRoute[] = [
@@ -50,10 +54,14 @@ export const authRoute: IRoute[] = [
     {path: RouteNames.COURSE, component: Course, exact: false},
     {path: RouteNames.LESSON, component: Lesson, exact: false},
     {path: RouteNames.STREAM, component: Stream, exact: false},
-    {path: RouteNames.ADMIN, component: Admin, exact: false},
+
     {path: RouteNames.PROFILE, component: Profile, exact: false}
 ]
 
-export const adminRoutes: IRoute[] = []
+export const adminRoutes: IRoute[] = [
+    {path: RouteNames.ADMIN, component: Admin, exact: false},
+]
+
+
 
 
