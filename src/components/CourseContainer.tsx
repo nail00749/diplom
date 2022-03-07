@@ -1,21 +1,9 @@
-import {Box} from '@mui/material';
-import React, {FC, useEffect, useState} from 'react';
+import {Box, Typography} from '@mui/material';
+import React, {FC} from 'react';
 import CourseItem from "./CourseItem";
 import {ICourse} from "../models/ICourse";
 
-const course = {
-    id: 'string',
-    name: 'name',
-    lesson: ['123', '123'],
-} as ICourse
-
 const CourseContainer: FC = () => {
-    const [courses, setCourses] = useState<ICourse[]>([]);
-    useEffect(()=> {
-        courses.push(course)
-        setCourses(courses)
-    }, [])
-
     return (
         <Box
             sx = {{
@@ -23,14 +11,24 @@ const CourseContainer: FC = () => {
                 borderRadius: 3,
                 minWidth: '25vw'
             }}
-            p={3}
+            p = {3}
         >
+            <Typography
+                component = 'h3'
+                mb = {3}
+            >
+                Courses
+            </Typography>
             {
-                courses.map((course) =>
+                [{
+                    id: 'string',
+                    name: 'Course 1',
+                    lesson: ['123', '123']
+                } as ICourse].map((course) =>
                     <CourseItem
                         key = {course.id}
-                        course={course}
-                     />
+                        course = {course}
+                    />
                 )
             }
         </Box>

@@ -9,17 +9,18 @@ interface CourseItemProps {
 
 
 const CourseItem: FC<CourseItemProps> = ({course}) => {
+
     return (
         <Link
-            to = {'/lesson'}
+            to = {`/course/${course.id}`}
         >
             <Box
                 mb = {3}
                 py = {1.5}
                 px = {3}
                 sx = {{
-                    backgroundColor: 'orange',
-                    borderRadius: 3
+                    borderRadius: 3,
+                    backgroundColor: 'gray'
                 }}
             >
                 {course.name}

@@ -1,25 +1,38 @@
-import {Box} from '@mui/material';
+import {Box, Typography} from '@mui/material';
 import React, {FC} from 'react';
 import StreamItem from "./StreamItem";
+
+const streams = [1, 2, 3]
 
 
 const StreamContainer: FC = () => {
     return (
         <Box
             sx = {{
-                border: '1px solid',
                 borderRadius: 3,
-                minWidth: '25vw'
+                minWidth: '25vw',
+                backgroundColor: 'orange'
             }}
-            p={3}
+            p = {3}
         >
+            <Typography
+                component = 'h3'
+                mb = {3}
+            >
+                Streams
+            </Typography>
             {
-                [1, 2, 3].map(stream =>
-                    <StreamItem/>
-                )
+                streams && streams.length ?
+                    streams.map(stream =>
+                        <StreamItem
+                            key={stream}
+                        />
+                    ) : <Typography>No active stream</Typography>
             }
         </Box>
     );
 };
 
 export default StreamContainer;
+
+

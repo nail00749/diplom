@@ -6,7 +6,6 @@ import {Grid, useMediaQuery} from "@mui/material";
 const Main: FC = () => {
     const matches = useMediaQuery('(max-width: 425px)')
 
-
     return (
         <Grid
             container

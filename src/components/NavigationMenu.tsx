@@ -1,32 +1,24 @@
 import React, {FC, useState} from 'react';
-import {
-    Box,
-    SwipeableDrawer,
-    Button,
-    List,
-    ListItem,
-    ListItemIcon,
-    ListItemText
-} from '@mui/material';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
+import {Link} from 'react-router-dom'
+import {Box, SwipeableDrawer, Button, List, ListItemIcon, ListItemText, ListItemButton} from '@mui/material';
 import DehazeIcon from '@mui/icons-material/Dehaze';
+import {linksNavigation} from "../router/router";
+import SwitchToggleTheme from "./SwitchToggleTheme";
 
 const NavigationMenu: FC = () => {
     const [state, setState] = useState<boolean>(false);
+    const [selectedLinkIndex, setSelectedLinkIndex] = useState(0);
 
     const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
         if (event && event.type === 'keydown' &&
             ((event as React.KeyboardEvent).key === 'Tab' || (event as React.KeyboardEvent).key === 'Shift')) {
             return;
         }
-
         setState(open);
     };
 
-
     return (
-        <div>
+        <Box>
             <React.Fragment>
                 <Button onClick = {toggleDrawer(true)}><DehazeIcon/></Button>
                 <SwipeableDrawer
@@ -36,25 +28,52 @@ const NavigationMenu: FC = () => {
                     onOpen = {toggleDrawer(true)}
                 >
                     <Box
-                        sx = {{width: 250}}
+                        sx = {{
+                            width: 250,
+                            height: '100%',
+                            display: 'flex',
+                            flexDirection: 'column'
+                        }}
                         role = "presentation"
                         onClick = {toggleDrawer(false)}
                         onKeyDown = {toggleDrawer(false)}
                     >
                         <List>
-                            {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                                <ListItem button key = {text}>
-                                    <ListItemIcon>
-                                        {index % 2 === 0 ? <InboxIcon/> : <MailIcon/>}
-                                    </ListItemIcon>
-                                    <ListItemText primary = {text}/>
-                                </ListItem>
-                            ))}
+                            {
+                                linksNavigation.map((item, index) =>
+                                    <Link
+                                        key = {item.text}
+                                        to = {item.link}
+                                    >
+                                        <ListItemButton
+                                            selected = {selectedLinkIndex === index}
+                                            onClick = {() => setSelectedLinkIndex(index)}
+                                        >
+                                            {
+                                                item.icon &&
+												<ListItemIcon>
+													<item.icon/>
+												</ListItemIcon>
+                                            }
+                                            <ListItemText
+                                                primary = {item.text}
+                                            />
+                                        </ListItemButton>
+                                    </Link>
+                                )
+                            }
                         </List>
+                    </Box>
+                    <Box
+                        sx = {{
+                            height: 50
+                        }}
+                    >
+                        <SwitchToggleTheme/>
                     </Box>
                 </SwipeableDrawer>
             </React.Fragment>
-        </div>
+        </Box>
     );
 }
 

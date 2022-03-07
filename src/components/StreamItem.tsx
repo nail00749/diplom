@@ -1,6 +1,11 @@
 import React, {FC} from 'react';
+import {IStream} from "../models/IStream";
 
-const StreamItem: FC = () => {
+interface StreamItemProps {
+    stream?: IStream
+}
+
+const StreamItem: FC<StreamItemProps> = ({stream}) => {
     return (
         <div>
 
