@@ -1,15 +1,16 @@
 import React, {FC} from 'react';
 import {Route, Routes, BrowserRouter, Navigate} from "react-router-dom";
 import {adminRoutes, authRoute, publicRoute} from '../router/router';
-import {useTypedSelector} from "../hooks/redux/useTypedSelector";
+import {useTypedSelector} from "../hooks/redux";
 import NavigationMenu from "./NavigationMenu";
+import Topbar from "./Topbar";
 
 const AppRouter: FC = () => {
     const {isAuthenticated} = useTypedSelector(state => state.userReducer)
 
     return (
         <BrowserRouter>
-            {isAuthenticated && <NavigationMenu/>}
+            {isAuthenticated && <Topbar/>}
             {
                 !isAuthenticated ?
                     <Routes>

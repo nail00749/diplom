@@ -28,7 +28,8 @@ const RegisterForm: FC<FormProps> = (props) => {
         setPassword(e.target.value)
     }
 
-    const sendData = async () => {
+    const sendData = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
         const data = {
             login,
             password
@@ -45,72 +46,78 @@ const RegisterForm: FC<FormProps> = (props) => {
 
     return (
         <>
-            <Box
-                mt = {3}
-                mb = {3}
+            <form
+                onSubmit={sendData}
             >
-                <FormControl>
-                    <InputLabel htmlFor = "outlined-adornment-email">Email</InputLabel>
-                    <OutlinedInput
-                        id = "outlined-adornment-email"
-                        type = {'text'}
-                        value = {login}
-                        onChange = {handlerLogin}
-                        endAdornment = {
-                            <InputAdornment
-                                position = "end"
-                                sx={{
-                                    marginLeft: '13px'
-                                }}
-                            >
-                                <AccountCircle/>
-                            </InputAdornment>
-                        }
-                        label = "email"
-                    />
-                </FormControl>
-            </Box>
-            <Box>
-                <FormControl>
-                    <InputLabel htmlFor = "outlined-adornment-password">Password</InputLabel>
-                    <OutlinedInput
-                        id = "outlined-adornment-password"
-                        type = {showPassword ? 'text' : 'password'}
-                        value = {password}
-                        onChange = {handlerPassword}
-                        endAdornment = {
-                            <InputAdornment position = "end">
-                                <IconButton
-                                    aria-label = "toggle password visibility"
-                                    onClick = {handlerShowPassword}
-                                    onMouseDown = {handlerMouseDown}
-                                    edge = "end"
-                                >
-                                    {showPassword ? <VisibilityOff/> : <Visibility/>}
-                                </IconButton>
-                            </InputAdornment>
-                        }
-                        label = "Password"
-                    />
-                </FormControl>
-            </Box>
-            <Box
-                mt = {3}
-                mb = {1}
-                display = 'flex'
-                justifyContent = 'center'
-            >
-                <Button
-                    variant = {'contained'}
+                <Box
+                    mt = {3}
+                    mb = {3}
                 >
-                    Auth
-                </Button>
-            </Box>
+                    <FormControl>
+                        <InputLabel htmlFor = "outlined-adornment-email">Email</InputLabel>
+                        <OutlinedInput
+                            id = "outlined-adornment-email"
+                            type = {'text'}
+                            value = {login}
+                            onChange = {handlerLogin}
+                            endAdornment = {
+                                <InputAdornment
+                                    position = "end"
+                                    sx = {{
+                                        marginLeft: '13px'
+                                    }}
+                                >
+                                    <AccountCircle/>
+                                </InputAdornment>
+                            }
+                            label = "email"
+                        />
+                    </FormControl>
+                </Box>
+                <Box>
+                    <FormControl>
+                        <InputLabel htmlFor = "outlined-adornment-password">Password</InputLabel>
+                        <OutlinedInput
+                            id = "outlined-adornment-password"
+                            type = {showPassword ? 'text' : 'password'}
+                            value = {password}
+                            onChange = {handlerPassword}
+                            endAdornment = {
+                                <InputAdornment position = "end">
+                                    <IconButton
+                                        aria-label = "toggle password visibility"
+                                        onClick = {handlerShowPassword}
+                                        onMouseDown = {handlerMouseDown}
+                                        edge = "end"
+                                    >
+                                        {showPassword ? <VisibilityOff/> : <Visibility/>}
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                            label = "Password"
+                        />
+                    </FormControl>
+                </Box>
+                <Box
+                    mt = {3}
+                    mb = {1}
+                    display = 'flex'
+                    justifyContent = 'center'
+                >
+                    <Button
+                        variant = {'contained'}
+                        type='submit'
+                    >
+                        Register
+                    </Button>
+                </Box>
+            </form>
             <Box
                 display = 'flex'
                 justifyContent = 'center'
             >
                 <Button
+                    variant='outlined'
                     onClick = {() => {
                         props.setIsLogin()
                     }}

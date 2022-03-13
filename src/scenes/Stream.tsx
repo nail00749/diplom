@@ -1,4 +1,4 @@
-import {Box} from '@mui/material';
+import {Box, Button} from '@mui/material';
 import React, {FC, useRef, useState} from 'react';
 import Webcam from "react-webcam";
 
@@ -48,9 +48,9 @@ const Stream: FC = () => {
             }
             <Box>
                 {capturing ? (
-                    <button onClick = {handleStopCaptureClick}>Stop Capture</button>
+                    <Button onClick = {handleStopCaptureClick}>Stop Capture</Button>
                 ) : (
-                    <button onClick = {handleStartCaptureClick}>Start Capture</button>
+                    <Button onClick = {handleStartCaptureClick}>Start Capture</Button>
                 )}
             </Box>
         </>

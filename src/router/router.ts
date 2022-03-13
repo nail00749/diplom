@@ -35,8 +35,6 @@ export enum RouteNames {
 
 export const linksNavigationUser: ILink[] = [
     {link: RouteNames.HOME, text: 'HOME', icon: HomeIcon},
-
-    {link: RouteNames.PROFILE, text: 'PROFILE', icon: AccountBoxIcon},
     {link: RouteNames.STREAM, text: 'STREAM', icon: SettingsInputAntennaIcon}
 ]
 
@@ -54,7 +52,6 @@ export const authRoute: IRoute[] = [
     {path: RouteNames.COURSE, component: Course, exact: false},
     {path: RouteNames.LESSON, component: Lesson, exact: false},
     {path: RouteNames.STREAM, component: Stream, exact: false},
-
     {path: RouteNames.PROFILE, component: Profile, exact: false}
 ]
 

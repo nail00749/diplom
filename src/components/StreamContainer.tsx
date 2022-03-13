@@ -11,7 +11,6 @@ const StreamContainer: FC = () => {
             sx = {{
                 borderRadius: 3,
                 minWidth: '25vw',
-                backgroundColor: 'orange'
             }}
             p = {3}
         >

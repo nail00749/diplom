@@ -1,6 +1,16 @@
 import React, {FC, useState} from 'react';
 import {Link} from 'react-router-dom'
-import {Box, SwipeableDrawer, Button, List, ListItemIcon, ListItemText, ListItemButton} from '@mui/material';
+import {
+    Box,
+    SwipeableDrawer,
+    Button,
+    List,
+    ListItemIcon,
+    ListItemText,
+    ListItemButton,
+    AppBar,
+    Toolbar, IconButton
+} from '@mui/material';
 import DehazeIcon from '@mui/icons-material/Dehaze';
 import {linksNavigationUser, linksNavigationAdmin} from "../router/router";
 import SwitchToggleTheme from "./SwitchToggleTheme";
@@ -19,8 +29,13 @@ const NavigationMenu: FC = () => {
 
     return (
         <Box>
-            <React.Fragment>
-                <Button onClick = {toggleDrawer(true)}><DehazeIcon/></Button>
+            <>
+                <IconButton
+                    onClick = {toggleDrawer(true)}
+                    color='default'
+                >
+                    <DehazeIcon/>
+                </IconButton>
                 <SwipeableDrawer
                     anchor = 'left'
                     open = {state}
@@ -95,7 +110,7 @@ const NavigationMenu: FC = () => {
                         <SwitchToggleTheme/>
                     </Box>
                 </SwipeableDrawer>
-            </React.Fragment>
+            </>
         </Box>
     );
 }

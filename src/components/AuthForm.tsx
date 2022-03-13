@@ -6,7 +6,7 @@ import {
     FormControl,
     OutlinedInput,
     IconButton,
-    InputLabel
+    InputLabel,
 } from "@mui/material";
 import {AccountCircle, VisibilityOff, Visibility} from '@mui/icons-material';
 import {useDispatch} from "react-redux";
@@ -31,7 +31,8 @@ const AuthForm: FC<FormProps> = (props) => {
         setPassword(e.target.value)
     }
 
-    const sendData = async () => {
+    const sendData = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
         //todo
         const data = {
             login,
@@ -50,68 +51,74 @@ const AuthForm: FC<FormProps> = (props) => {
 
     return (
         <>
-            <Box
-                mt = {3}
-                mb = {3}
+            <form
+                onSubmit = {sendData}
             >
-                <FormControl>
-                    <InputLabel htmlFor = "outlined-adornment-email">Email</InputLabel>
-                    <OutlinedInput
-                        id = "outlined-adornment-email"
-                        type = {'text'}
-                        value = {login}
-                        onChange = {handlerLogin}
-                        endAdornment = {
-                            <InputAdornment
-                                position = "end"
-                                sx={{
-                                    marginLeft: '13px'
-                                }}
-                            >
-                                <AccountCircle/>
-                            </InputAdornment>
-                        }
-                        label = "email"
-                    />
-                </FormControl>
-            </Box>
-            <Box>
-                <FormControl>
-                    <InputLabel htmlFor = "outlined-adornment-password">Password</InputLabel>
-                    <OutlinedInput
-                        id = "outlined-adornment-password"
-                        type = {showPassword ? 'text' : 'password'}
-                        value = {password}
-                        onChange = {handlerPassword}
-                        endAdornment = {
-                            <InputAdornment position = "end">
-                                <IconButton
-                                    aria-label = "toggle password visibility"
-                                    onClick = {handlerShowPassword}
-                                    onMouseDown = {handlerMouseDown}
-                                    edge = "end"
-                                >
-                                    {showPassword ? <VisibilityOff/> : <Visibility/>}
-                                </IconButton>
-                            </InputAdornment>
-                        }
-                        label = "Password"
-                    />
-                </FormControl>
-            </Box>
-            <Box
-                mt = {3}
-                mb = {1}
-                display = 'flex'
-                justifyContent = 'center'
-            >
-                <Button
-                    variant = {'contained'}
-                    onClick={sendData}
+                <Box
+                    mt = {3}
+                    mb = {3}
                 >
-                    Auth
-                </Button>
-            </Box>
+
+                    <FormControl>
+                        <InputLabel htmlFor = "outlined-adornment-email">Email</InputLabel>
+                        <OutlinedInput
+                            id = "outlined-adornment-email"
+                            type = {'text'}
+                            value = {login}
+                            onChange = {handlerLogin}
+                            endAdornment = {
+                                <InputAdornment
+                                    position = "end"
+                                    sx = {{
+                                        marginLeft: '13px'
+                                    }}
+                                >
+                                    <AccountCircle/>
+                                </InputAdornment>
+                            }
+                            label = "email"
+                        />
+                    </FormControl>
+                </Box>
+                <Box>
+                    <FormControl>
+                        <InputLabel htmlFor = "outlined-adornment-password">Password</InputLabel>
+                        <OutlinedInput
+                            id = "outlined-adornment-password"
+                            type = {showPassword ? 'text' : 'password'}
+                            value = {password}
+                            onChange = {handlerPassword}
+                            endAdornment = {
+                                <InputAdornment position = "end">
+                                    <IconButton
+                                        aria-label = "toggle password visibility"
+                                        onClick = {handlerShowPassword}
+                                        onMouseDown = {handlerMouseDown}
+                                        edge = "end"
+                                    >
+                                        {showPassword ? <VisibilityOff/> : <Visibility/>}
+                                    </IconButton>
+                                </InputAdornment>
+                            }
+                            label = "Password"
+                        />
+                    </FormControl>
+                </Box>
+                <Box
+                    mt = {3}
+                    mb = {1}
+                    display = 'flex'
+                    justifyContent = 'center'
+                >
+                    <Button
+                        type = 'submit'
+                        variant = 'contained'
+                    >
+                        Auth
+                    </Button>
+
+                </Box>
+            </form>
             <Box
                 display = 'flex'
                 justifyContent = 'center'
@@ -120,6 +127,7 @@ const AuthForm: FC<FormProps> = (props) => {
                     onClick = {() => {
                         props.setIsLogin()
                     }}
+                    variant = 'outlined'
                 >
                     {'Sign up'}
                 </Button>

@@ -66,7 +66,7 @@ const SwitchToggleTheme: FC = () => {
                     onChange = {mode.toggleColorMode}
                 />
             }
-            label = "MUI switch"
+            label = "Theme"
         />
     );
 };

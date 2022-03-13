@@ -47,7 +47,6 @@ const App = () => {
                 minHeight: '100vh',
                 bgcolor: 'background.default',
             }}
-            pt={2}
         >
             <AppRouter/>
         </Box>

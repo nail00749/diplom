@@ -20,7 +20,6 @@ const CourseItem: FC<CourseItemProps> = ({course}) => {
                 px = {3}
                 sx = {{
                     borderRadius: 3,
-                    backgroundColor: 'gray'
                 }}
             >
                 {course.name}
