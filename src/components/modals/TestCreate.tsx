@@ -1,9 +1,23 @@
 import React, {FC, useState} from 'react';
-import {Dialog, Slide, Typography, IconButton, Box, TextField, Button, MenuItem} from "@mui/material";
+import {
+    Dialog,
+    Slide,
+    Typography,
+    IconButton,
+    Box,
+    TextField,
+    Button,
+    MenuItem,
+    Grid,
+    useMediaQuery
+} from "@mui/material";
 import {TransitionProps} from '@mui/material/transitions';
 import CloseIcon from '@mui/icons-material/Close';
 import SaveIcon from '@mui/icons-material/Save';
-import {IQuestion} from "../../models/ITest";
+import {useTypedSelector} from "../../hooks/redux";
+import {useDispatch} from "react-redux";
+import {addQuestion, resetForm} from "../../store/reducers/testCreate/TestSlice";
+import Question from "../test/Question";
 
 const Transition = React.forwardRef(function Transition(props: TransitionProps & {
     children: React.ReactElement;
@@ -16,14 +30,16 @@ interface CourseCreateProps {
     onClose: () => void
 }
 
-
 const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
     const [name, setName] = useState({text: '', error: false});
     const [about, setAbout] = useState({text: '', error: false});
     const [lesson, setLesson] = useState({value: '', error: false});
-    const [questions, setQuestions] = useState<IQuestion[]>([]);
+    const {questions} = useTypedSelector(state => state.testReducer)
+    const dispatch = useDispatch()
 
-    const saveCourse = async () => {
+    const matches = useMediaQuery('(max-width: 425px)')
+
+    const saveTest = async () => {
         let isError = false
         if (!name.text) {
             isError = true
@@ -42,9 +58,8 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
             return
         }
         //todo api
-        setName({text: '', error: false})
-        setAbout({text: '', error: false})
-        setLesson({value: '', error: false})
+        defaultValue()
+        dispatch(resetForm())
         onClose()
     };
 
@@ -61,25 +76,30 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
     };
 
     const handlerAdd = () => {
-        setQuestions(prev => [...prev, {text: ''} as IQuestion])
+        dispatch(addQuestion())
     };
 
-    const handlerDeleteQuestion = (index: number) => {
-        return () => {
-            setQuestions(prev => prev.filter((item, i) => i !== index))
-        }
-    };
+    const closeWindow = () => {
+        defaultValue()
+        onClose()
+    }
+
+    const defaultValue = () => {
+        setName({text: '', error: false})
+        setAbout({text: '', error: false})
+        setLesson({value: '', error: false})
+    }
 
     return (
         <Dialog
             open = {open}
             TransitionComponent = {Transition}
-            onClose = {onClose}
+            onClose = {closeWindow}
             fullScreen
         >
             <Box
                 p = {3}
-                px = {10}
+                px = {matches ? 3 : 10}
             >
                 <Box
                     sx = {{
@@ -89,7 +109,7 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
                     mb = {2}
                 >
                     <IconButton
-                        onClick = {onClose}
+                        onClick = {closeWindow}
                     >
                         <CloseIcon/>
                     </IconButton>
@@ -97,69 +117,68 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
                         Create test
                     </Typography>
                 </Box>
-                <Box mb = {3}>
-                    <TextField
-                        label = 'Name'
-                        variant = 'filled'
-                        required
-                        onChange = {handlerName}
-                        value = {name.text}
-                        error = {name.error}
-                    />
-                </Box>
-                <Box mb = {3}>
-                    <TextField
-                        label = 'About'
-                        variant = 'filled'
-                        required
-                        onChange = {handlerAbout}
-                        value = {about.text}
-                        error = {about.error}
-                    />
-                </Box>
-                <Box mb = {3}>
-                    <TextField
-                        id = "outlined-select-currency"
-                        select
-                        variant = 'filled'
-                        label = "Lesson"
-                        value = {lesson.value}
-                        onChange = {handleCourse}
-                        required
-                        fullWidth
-                        error = {lesson.error}
-                    >
-                        {[1, 2, 3].map((option) => (
-                            <MenuItem key = {option} value = {option}>
-                                {option}
-                            </MenuItem>
-                        ))}
-                    </TextField>
-                </Box>
+                <Grid
+                    container
+                    spacing = {3}
+                >
+                    <Grid item xs = {12} md = {6} lg = {4}>
+                        <Box mb = {3}>
+                            <TextField
+                                label = 'Name'
+                                variant = 'filled'
+                                required
+                                onChange = {handlerName}
+                                value = {name.text}
+                                error = {name.error}
+                                fullWidth
+                            />
+                        </Box>
+                    </Grid>
+                    <Grid item xs = {12} md = {6} lg = {4}>
+                        <Box mb = {3}>
+                            <TextField
+                                label = 'About'
+                                variant = 'filled'
+                                required
+                                onChange = {handlerAbout}
+                                value = {about.text}
+                                error = {about.error}
+                                fullWidth
+                            />
+                        </Box>
+                    </Grid>
+                    <Grid item xs = {12} md = {6} lg = {4}>
+                        <Box mb = {3}>
+                            <TextField
+                                id = "outlined-select-currency"
+                                select
+                                variant = 'filled'
+                                label = "Lesson"
+                                value = {lesson.value}
+                                onChange = {handleCourse}
+                                required
+                                fullWidth
+                                error = {lesson.error}
+                            >
+                                {[1, 2, 3].map((option) => (
+                                    <MenuItem key = {option} value = {option}>
+                                        {option}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                        </Box>
+                    </Grid>
+                </Grid>
                 <Box>
                     {
-                        questions.map((item, index) =>
-                            <Box
-                                key = {index}
-                                mb = {2}
-                                sx = {{
-                                    display: 'flex',
-                                    alignItems: 'center'
-                                }}
-                            >
-                                <TextField
-                                    label = {'Text question'}
+                        questions && questions.length ?
+                            questions.map((item, index) =>
+                                <Question
+                                    value = {item}
+                                    key = {item.id}
+                                    index = {index}
                                 />
-                                <Button
-                                    variant = 'outlined'
-                                    color = 'error'
-                                    //todo fix index
-                                    onClick = {handlerDeleteQuestion(index)}
-                                >
-                                    Delete
-                                </Button>
-                            </Box>
-                        )
+                            ) : null
                     }
                 </Box>
                 <Box mb = {3}>
@@ -175,7 +194,7 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
                         variant = 'outlined'
                         color = 'success'
                         endIcon = {<SaveIcon/>}
-                        onClick = {saveCourse}
+                        onClick = {saveTest}
                     >
                         Save
                     </Button>

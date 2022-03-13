@@ -1,8 +1,10 @@
 import React, {FC, useState} from 'react';
-import {Dialog, Slide, Typography, IconButton, Box, TextField, Button, MenuItem} from "@mui/material";
+import {Dialog, Slide, Typography, IconButton, Box, TextField, Button, MenuItem, Autocomplete} from "@mui/material";
 import {TransitionProps} from '@mui/material/transitions';
 import CloseIcon from '@mui/icons-material/Close';
 import SaveIcon from '@mui/icons-material/Save';
+import {handleInputChange} from "react-select/dist/declarations/src/utils";
+import {ICourse} from "../../models/ICourse";
 
 const Transition = React.forwardRef(function Transition(props: TransitionProps & {
     children: React.ReactElement;
@@ -15,12 +17,17 @@ interface CourseCreateProps {
     onClose: () => void
 }
 
+interface CourseField extends ICourse {
+    error: boolean,
+}
+
 const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
     const [name, setName] = useState({text: '', error: false});
     const [about, setAbout] = useState({text: '', error: false});
-    const [course, setCourse] = useState({value: '', error: false});
+    const [course, setCourse] = useState<CourseField>({name: '', error: false});
+    const [courseInputValue, setCourseInputValue] = useState('');
 
-    const saveCourse = async () => {
+    const saveLesson = async () => {
         let isError = false
         if (!name.text) {
             isError = true
@@ -30,7 +37,7 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
             isError = true
             setAbout(prev => ({...prev, error: true}))
         }
-        if(!course.value){
+        if (!course.name) {
             isError = true
             setCourse(prev => ({...prev, error: true}))
         }
@@ -39,9 +46,7 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
             return
         }
         //todo api
-        setName({text: '', error: false})
-        setAbout({text: '', error: false})
-        setCourse({value: '', error: false})
+        defaultValues()
         onClose()
     };
 
@@ -53,15 +58,27 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
         setAbout(prev => ({...prev, text: e.target.value, error: false}))
     };
 
-    const handleCourse = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setCourse({...course, value: e.target.value, error: false})
+    const handleCourse = (e: any, newValue: string | null) => {
+        setCourse({...course, name: newValue})
+        //setCourse({...course, value: e.target.value, error: false})
     };
+
+    const handleClose = () => {
+        defaultValues()
+        onClose()
+    }
+
+    const defaultValues = () => {
+        setName({text: '', error: false})
+        setAbout({text: '', error: false})
+        setCourse({name: '', error: false})
+    }
 
     return (
         <Dialog
             open = {open}
             TransitionComponent = {Transition}
-            onClose = {onClose}
+            onClose = {handleClose}
 
         >
             <Box
@@ -76,7 +93,7 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
                     mb = {2}
                 >
                     <IconButton
-                        onClick = {onClose}
+                        onClick = {handleClose}
                     >
                         <CloseIcon/>
                     </IconButton>
@@ -105,29 +122,31 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
                     />
                 </Box>
                 <Box mb = {3}>
-                    <TextField
-                        id = "outlined-select-currency"
-                        select
-                        variant = 'filled'
-                        label = "Course"
-                        value = {course.value}
+                    <Autocomplete
+                        renderInput = {params =>
+                            <TextField
+                                {...params}
+                                label = 'Course'
+                                variant = 'filled'
+                                required
+                                fullWidth
+                                error = {course.error}
+                            />
+                        }
+                        value = {course.name}
+                        options = {['1', '2', '3']}
                         onChange = {handleCourse}
-                        required
-                        fullWidth
-                        error={course.error}
-                    >
-                        {[1, 2, 3].map((option) => (
-                            <MenuItem key = {option} value = {option}>
-                                {option}
-                            </MenuItem>
-                        ))}
-                    </TextField>
+                        inputValue = {courseInputValue}
+                        onInputChange = {(e, newValue) => {
+                            setCourseInputValue(newValue)
+                        }}
+                    />
                 </Box>
                 <Button
                     variant = 'outlined'
                     color = 'success'
                     endIcon = {<SaveIcon/>}
-                    onClick = {saveCourse}
+                    onClick = {saveLesson}
                 >
                     Save
                 </Button>

@@ -19,7 +19,6 @@ const Admin: FC = () => {
                 >
                     <ButtonGroup
                         orientation='vertical'
-
                     >
                         <Box mb = {2}>
                             <Button
