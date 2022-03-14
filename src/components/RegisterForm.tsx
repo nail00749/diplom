@@ -9,19 +9,24 @@ import {
     InputLabel
 } from "@mui/material";
 import {AccountCircle, VisibilityOff, Visibility} from '@mui/icons-material';
+import {useRegisterMutation} from "../services/userAPI";
+import LoadingButton from "@mui/lab/LoadingButton";
+import RegisterSuccess from "./modals/RegisterSuccess";
 
-type FormProps = {
+interface FormProps {
     setIsLogin: () => void
 }
 
-const RegisterForm: FC<FormProps> = (props) => {
-    const [login, setLogin] = useState<string>('');
+const RegisterForm: FC<FormProps> = ({setIsLogin}) => {
+    const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
-
     const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [isOpenSuccess, setIsOpenSuccess] = useState(false);
+
+    const [register, {isLoading, isError}] = useRegisterMutation()
 
     const handlerLogin = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setLogin(e.target.value);
+        setUsername(e.target.value);
     }
 
     const handlerPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,9 +36,12 @@ const RegisterForm: FC<FormProps> = (props) => {
     const sendData = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         const data = {
-            login,
+            email: username,
             password
         }
+        await register(data)
+        setIsOpenSuccess(true)
+        //todo data error
     }
 
     const handlerShowPassword = () => {
@@ -47,7 +55,7 @@ const RegisterForm: FC<FormProps> = (props) => {
     return (
         <>
             <form
-                onSubmit={sendData}
+                onSubmit = {sendData}
             >
                 <Box
                     mt = {3}
@@ -58,7 +66,7 @@ const RegisterForm: FC<FormProps> = (props) => {
                         <OutlinedInput
                             id = "outlined-adornment-email"
                             type = {'text'}
-                            value = {login}
+                            value = {username}
                             onChange = {handlerLogin}
                             endAdornment = {
                                 <InputAdornment
@@ -104,12 +112,13 @@ const RegisterForm: FC<FormProps> = (props) => {
                     display = 'flex'
                     justifyContent = 'center'
                 >
-                    <Button
+                    <LoadingButton
+                        loading = {isLoading}
                         variant = {'contained'}
-                        type='submit'
+                        type = 'submit'
                     >
                         Register
-                    </Button>
+                    </LoadingButton>
                 </Box>
             </form>
             <Box
@@ -117,14 +126,19 @@ const RegisterForm: FC<FormProps> = (props) => {
                 justifyContent = 'center'
             >
                 <Button
-                    variant='outlined'
+                    variant = 'outlined'
                     onClick = {() => {
-                        props.setIsLogin()
+                        setIsLogin()
                     }}
                 >
                     {'Log in'}
                 </Button>
             </Box>
+            <RegisterSuccess
+                open = {isOpenSuccess}
+                setClose = {setIsOpenSuccess}
+                setPageLogin = {setIsLogin}
+            />
         </>
     );
 };

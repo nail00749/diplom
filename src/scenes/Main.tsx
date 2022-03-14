@@ -2,6 +2,7 @@ import React, {FC} from 'react';
 import CourseContainer from "../components/CourseContainer";
 import StreamContainer from "../components/StreamContainer";
 import {Grid, useMediaQuery} from "@mui/material";
+import Profile from "../components/Profile";
 
 const Main: FC = () => {
     const matches = useMediaQuery('(max-width: 425px)')
@@ -9,24 +10,31 @@ const Main: FC = () => {
     return (
         <Grid
             container
-            spacing = {5}
-            mt={.5}
-            p={matches ? 1 : 3}
+            spacing = {2}
+            mt = {.5}
+            p = {matches ? 1 : 3}
         >
             <Grid
                 item
                 xs = {12}
-                md={4}
+                md = {4}
+            >
+                <Profile/>
+            </Grid>
+            <Grid
+                item
+                xs = {12}
+                md = {4}
             >
                 <CourseContainer/>
             </Grid>
-            <Grid
+            {/*<Grid
                 item
                 xs = {12}
                 md={4}
             >
                 <StreamContainer/>
-            </Grid>
+            </Grid>*/}
         </Grid>
     );
 };

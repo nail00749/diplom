@@ -1,8 +1,10 @@
-import {IRole} from "./IRole";
 
 export interface IUser {
-    email: string;
-    firstName: string;
-    lastName: string;
-    roles: IRole[]
+    email: string
+    id?: number
+    password?: string
+    role?: 'user' | 'teacher' | 'admin'
+    name?: string
+    surname?: string,
+    telegram?: string
 }

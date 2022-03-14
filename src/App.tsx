@@ -40,7 +40,6 @@ const getDesignTokens = (mode: PaletteMode) => ({
 
 
 const App = () => {
-
     return (
         <Box
             sx = {{

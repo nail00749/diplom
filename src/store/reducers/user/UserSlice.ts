@@ -1,12 +1,12 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {IUser} from "../../../models/IUser";
-import {fetchAuth} from "./ActionCreator";
 
 interface UserState {
-    user: IUser,
+    user?: IUser,
     isAuthenticated: boolean,
     isLoading: boolean,
-    error: string
+    error: string,
+    token: ''
 }
 
 const initialState: UserState = {
@@ -14,33 +14,35 @@ const initialState: UserState = {
     isLoading: false,
     user: {
         email: "",
-        firstName: "",
-        lastName: "",
-        roles: []
     },
-    error: ''
+    error: '',
+    token: ''
 }
 
 export const userSlice = createSlice({
     name: 'user',
     initialState,
-    reducers: {},
-    extraReducers: {
-        [fetchAuth.fulfilled.type]: (state, action: PayloadAction<IUser>) => {
+    reducers: {
+        fetchAuthLoading: (state) => {
+            state.isLoading = true
+        },
+        fetchAuthError: (state, action: PayloadAction<string>) => {
+            state.isLoading = false
+            state.error = action.payload
+        },
+        fetchAuthSuccess: (state, ) => {
             state.isLoading = false
             state.error = ''
             state.isAuthenticated = true
-            //state.user = action.payload
-        },
-        [fetchAuth.pending.type]: (state) => {
-            state.isLoading = true
-        },
-        [fetchAuth.rejected.type]: (state, action: PayloadAction<string>) => {
-            state.isLoading = false
-            state.error = action.payload
-        }
-    },
 
+        },
+        fetchMeData: (state, action: PayloadAction<IUser>) =>{
+            state.user = action.payload
+        }
+
+    },
 })
+
+export const {fetchAuthSuccess, fetchAuthLoading, fetchAuthError, fetchMeData} =  userSlice.actions
 
 export default userSlice.reducer

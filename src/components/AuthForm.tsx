@@ -6,25 +6,26 @@ import {
     FormControl,
     OutlinedInput,
     IconButton,
-    InputLabel,
+    InputLabel, Collapse, Alert
 } from "@mui/material";
 import {AccountCircle, VisibilityOff, Visibility} from '@mui/icons-material';
-import {useDispatch} from "react-redux";
-import {fetchAuth} from "../store/reducers/user/ActionCreator";
+import LoadingButton from '@mui/lab/LoadingButton';
+import {userAPI} from "../services/userAPI";
+import {useTypedSelector} from "../hooks/redux";
 
 type FormProps = {
     setIsLogin: () => void
 }
 
 const AuthForm: FC<FormProps> = (props) => {
-    const [login, setLogin] = useState<string>('');
+    const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
-    const dispatch = useDispatch()
-
     const [showPassword, setShowPassword] = useState<boolean>(false);
+    const [login, {isLoading, isError}] = userAPI.useLoginMutation()
+    const {error} = useTypedSelector(state => state.userReducer)
 
     const handlerLogin = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setLogin(e.target.value);
+        setUsername(e.target.value);
     }
 
     const handlerPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,11 +35,11 @@ const AuthForm: FC<FormProps> = (props) => {
     const sendData = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         //todo
-        const data = {
-            login,
-            password
-        }
-        dispatch(fetchAuth())
+        const data = new FormData()
+        data.append('username', username)
+        data.append('password', password)
+        await login(data)
+        //console.log(error)
     }
 
     const handlerShowPassword = () => {
@@ -58,13 +59,12 @@ const AuthForm: FC<FormProps> = (props) => {
                     mt = {3}
                     mb = {3}
                 >
-
                     <FormControl>
                         <InputLabel htmlFor = "outlined-adornment-email">Email</InputLabel>
                         <OutlinedInput
                             id = "outlined-adornment-email"
                             type = {'text'}
-                            value = {login}
+                            value = {username}
                             onChange = {handlerLogin}
                             endAdornment = {
                                 <InputAdornment
@@ -77,6 +77,7 @@ const AuthForm: FC<FormProps> = (props) => {
                                 </InputAdornment>
                             }
                             label = "email"
+                            autoComplete = {'username'}
                         />
                     </FormControl>
                 </Box>
@@ -101,6 +102,7 @@ const AuthForm: FC<FormProps> = (props) => {
                                 </InputAdornment>
                             }
                             label = "Password"
+                            autoComplete = {'current-password'}
                         />
                     </FormControl>
                 </Box>
@@ -110,12 +112,13 @@ const AuthForm: FC<FormProps> = (props) => {
                     display = 'flex'
                     justifyContent = 'center'
                 >
-                    <Button
+                    <LoadingButton
+                        loading = {isLoading}
                         type = 'submit'
                         variant = 'contained'
                     >
                         Auth
-                    </Button>
+                    </LoadingButton>
 
                 </Box>
             </form>
@@ -132,6 +135,22 @@ const AuthForm: FC<FormProps> = (props) => {
                     {'Sign up'}
                 </Button>
             </Box>
+            {
+                isError &&
+				<Collapse
+					in = {true}
+					sx = {{
+                        position: 'fixed',
+                        bottom: 50
+                    }}
+				>
+					<Alert
+						severity = 'error'
+					>
+                        {error}
+					</Alert>
+				</Collapse>
+            }
         </>
 
     );

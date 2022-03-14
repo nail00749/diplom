@@ -2,7 +2,6 @@ import React, {FC} from 'react';
 import {Route, Routes, BrowserRouter, Navigate} from "react-router-dom";
 import {adminRoutes, authRoute, publicRoute} from '../router/router';
 import {useTypedSelector} from "../hooks/redux";
-import NavigationMenu from "./NavigationMenu";
 import Topbar from "./Topbar";
 
 const AppRouter: FC = () => {
@@ -29,7 +28,6 @@ const AppRouter: FC = () => {
                             element = {<Navigate to = '/'/>}
                         />
                     </Routes> :
-
                     <Routes>
                         {
                             authRoute.map(route =>
@@ -56,7 +54,6 @@ const AppRouter: FC = () => {
                             element = {<Navigate to = '/'/>}
                         />
                     </Routes>
-
             }
         </BrowserRouter>
 

@@ -7,9 +7,8 @@ import Stream from "../scenes/Stream";
 import Admin from '../scenes/Admin';
 import HomeIcon from '@mui/icons-material/Home';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import SettingsInputAntennaIcon from '@mui/icons-material/SettingsInputAntenna';
-import Profile from '../scenes/Profile';
+
 
 export interface IRoute {
     path: string,
@@ -30,7 +29,6 @@ export enum RouteNames {
     LESSON = '/lesson/:lessonId',
     STREAM = '/stream',
     ADMIN = '/admin',
-    PROFILE = '/profile',
 }
 
 export const linksNavigationUser: ILink[] = [
@@ -52,7 +50,6 @@ export const authRoute: IRoute[] = [
     {path: RouteNames.COURSE, component: Course, exact: false},
     {path: RouteNames.LESSON, component: Lesson, exact: false},
     {path: RouteNames.STREAM, component: Stream, exact: false},
-    {path: RouteNames.PROFILE, component: Profile, exact: false}
 ]
 
 export const adminRoutes: IRoute[] = [
