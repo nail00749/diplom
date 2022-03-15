@@ -30,19 +30,22 @@ export const userSlice = createSlice({
             state.isLoading = false
             state.error = action.payload
         },
-        fetchAuthSuccess: (state, ) => {
+        fetchAuthSuccess: (state,) => {
             state.isLoading = false
             state.error = ''
             state.isAuthenticated = true
-
         },
-        fetchMeData: (state, action: PayloadAction<IUser>) =>{
+        fetchMeData: (state, action: PayloadAction<IUser>) => {
             state.user = action.payload
+        },
+        fetchUpdateData: (state, action) => {
+            const copy = {...state.user, ...action.payload}
+            state.user = copy
         }
 
     },
 })
 
-export const {fetchAuthSuccess, fetchAuthLoading, fetchAuthError, fetchMeData} =  userSlice.actions
+export const {fetchAuthSuccess, fetchAuthLoading, fetchAuthError, fetchMeData, fetchUpdateData} = userSlice.actions
 
 export default userSlice.reducer

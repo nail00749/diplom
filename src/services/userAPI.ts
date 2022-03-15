@@ -1,6 +1,12 @@
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/dist/query/react";
 import {BaseURL} from "../config";
-import {fetchAuthError, fetchAuthLoading, fetchAuthSuccess, fetchMeData} from "../store/reducers/user/UserSlice";
+import {
+    fetchAuthError,
+    fetchAuthLoading,
+    fetchAuthSuccess,
+    fetchMeData,
+    fetchUpdateData
+} from "../store/reducers/user/UserSlice";
 
 export const userAPI = createApi({
     reducerPath: 'userAPI',
@@ -30,7 +36,7 @@ export const userAPI = createApi({
                     localStorage.setItem('token', data.access_token)
                     dispatch(fetchAuthSuccess())
                 } catch (e: any) {
-                    dispatch(fetchAuthError(e.error.data.detail))
+                    dispatch(fetchAuthError((e.error && e.error.data && e.error.data.detail) || 'Oops, unknown error'))
                 }
             }
         }),
@@ -46,7 +52,11 @@ export const userAPI = createApi({
                 url: '/users',
                 method: "PATCH",
                 body
-            })
+            }),
+            async onQueryStarted(_, {dispatch, queryFulfilled}) {
+                const {data} = await queryFulfilled
+                dispatch(fetchUpdateData(data))
+            }
         }),
         getMeData: build.query({
             query: () => '/users/me/',
@@ -58,6 +68,6 @@ export const userAPI = createApi({
     })
 })
 
-export const {useLoginMutation, useRegisterMutation, useGetMeDataQuery} = userAPI
+export const {useLoginMutation, useRegisterMutation, useGetMeDataQuery, useUpdateMutation} = userAPI
 
 export const {endpoints, reducerPath, reducer, middleware} = userAPI

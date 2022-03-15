@@ -1,16 +1,59 @@
-import React, {FC, useEffect} from 'react'
-import {Avatar, Box, Button, Typography} from "@mui/material";
+import React, {FC, useState} from 'react'
+import {Avatar, Box, Button, TextField, Typography} from "@mui/material";
 import {useTypedSelector} from "../hooks/redux";
-import {useGetMeDataQuery} from "../services/userAPI";
+import {useGetMeDataQuery, useUpdateMutation} from "../services/userAPI";
+import {LoadingButton} from "@mui/lab";
+
+interface IUserEdit {
+    name: string
+    surname: string
+    telegram: string
+}
 
 
 const Profile: FC = () => {
+    //todo update image avatar
     const {user} = useTypedSelector(state => state.userReducer)
+    const [isEdit, setIsEdit] = useState(false);
+    const [userData, setUserData] = useState<IUserEdit>({
+        name: '',
+        surname: '',
+        telegram: ''
+    });
     useGetMeDataQuery('')
-    useEffect(() => {
+    const [update, {isSuccess, isError, isLoading}] = useUpdateMutation()
 
-    }, [])
+    const handlerIsEdit = () => {
+        setIsEdit(prev => !prev)
+        const data = {
+            name: (user && user.name) || '',
+            surname: (user && user.surname) || '',
+            telegram: (user && user.telegram) || '',
+        }
+        setUserData(data)
+    }
 
+    const handlerData = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setUserData(prev => {
+            const copy = {...prev}
+            copy[e.target.name as keyof IUserEdit] = e.target.value
+            return copy
+        })
+    }
+
+    const handlerUpdate = async () => {
+        await update(userData)
+        setIsEdit(false)
+    };
+
+    const handlerCancel = () => {
+        setUserData({
+            name: '',
+            surname: '',
+            telegram: ''
+        })
+        setIsEdit(false)
+    };
 
     return (
         <Box
@@ -37,26 +80,84 @@ const Profile: FC = () => {
                         alignItems: 'center',
                         width: '100%'
                     }}
-                >
-					<Box
-						ml = {4}
-                        my={2}
-                        alignSelf = 'flex-start'
-					>
-						<Typography
-							variant = 'h6'
-						>
-                            {user.email}
-						</Typography>
-					</Box>
-                    <Box>
-                        <Button
-                            fullWidth
-                            variant = 'outlined'
-                        >
-                            Edit profile
-                        </Button>
-                    </Box>
+				>
+                    {
+                        !isEdit &&
+						<>
+							<Box
+								ml = {4}
+								my = {2}
+								alignSelf = 'flex-start'
+							>
+								<Typography
+									variant = 'h6'
+								>
+                                    {user.email}
+								</Typography>
+							</Box>
+							<Box>
+								<Button
+									fullWidth
+									variant = 'outlined'
+									onClick = {handlerIsEdit}
+								>
+									Edit profile
+								</Button>
+							</Box>
+						</>
+                    }
+                    {
+                        isEdit &&
+						<>
+							<Box
+								my = {3}
+							>
+								<TextField
+									label = 'Name'
+									name = 'name'
+									onChange = {handlerData}
+									value = {userData.name}
+								/>
+							</Box>
+							<Box>
+								<TextField
+									label = 'Surname'
+									name = 'surname'
+									onChange = {handlerData}
+									value = {userData.surname}
+								/>
+							</Box>
+							<Box
+								my = {3}
+							>
+								<TextField
+									label = 'Telegram'
+									name = 'telegram'
+									onChange = {handlerData}
+									value = {userData.telegram}
+								/>
+							</Box>
+							<Box>
+								<LoadingButton
+									loading = {isLoading}
+									color = 'success'
+									variant = 'contained'
+									sx = {{
+                                        mr: 1
+                                    }}
+									onClick = {handlerUpdate}
+								>
+									Save
+								</LoadingButton>
+								<Button
+									variant = 'contained'
+									onClick = {handlerCancel}
+								>
+									Cancel
+								</Button>
+							</Box>
+						</>
+                    }
 				</Box>
 
             }
