@@ -29,8 +29,8 @@ export const testSlice = createSlice({
             const question: IQuestion = {
                 text: '',
                 answers: [],
-                isExtensions: false,
-                isMultiple: false,
+                is_extended: false,
+                is_multiple: false,
                 id: Date.now().toString()
             }
             state.questions.push(question)
@@ -43,10 +43,10 @@ export const testSlice = createSlice({
             state.questions = state.questions.filter((item, i) => i !== action.payload)
         },
         extensionChange: (state, action: PayloadAction<number>) => {
-            state.questions[action.payload].isExtensions = !state.questions[action.payload].isExtensions
+            state.questions[action.payload].is_extended = !state.questions[action.payload].is_extended
         },
         multipleChange: (state, action: PayloadAction<number>) => {
-            state.questions[action.payload].isMultiple = !state.questions[action.payload].isMultiple
+            state.questions[action.payload].is_multiple = !state.questions[action.payload].is_multiple
         },
         resetForm: (state) => {
             state = initialState
@@ -54,7 +54,7 @@ export const testSlice = createSlice({
         addAnswer: (state, action: PayloadAction<number>) => {
             const answer: IAnswer = {
                 text: '',
-                isCorrect: false,
+                is_correct: false,
                 id: Date.now().toString()
             }
             state.questions[action.payload].answers.push(answer)
@@ -72,7 +72,7 @@ export const testSlice = createSlice({
         },
         correctAnswer: (state, action: PayloadAction<IAnswerPayload>) => {
             const answers = [...state.questions[action.payload.indexQuestion].answers]
-            answers[action.payload.indexAnswer].isCorrect = !answers[action.payload.indexAnswer].isCorrect
+            answers[action.payload.indexAnswer].is_correct = !answers[action.payload.indexAnswer].is_correct
             state.questions[action.payload.indexQuestion].answers = answers
         }
     }

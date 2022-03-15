@@ -1,10 +1,10 @@
-import React, {FC, useState} from 'react';
-import {Dialog, Slide, Typography, IconButton, Box, TextField, Button, MenuItem, Autocomplete} from "@mui/material";
+import React, {FC, useEffect, useState} from 'react';
+import {Dialog, Slide, Typography, IconButton, Box, TextField, Button, Autocomplete} from "@mui/material";
 import {TransitionProps} from '@mui/material/transitions';
 import CloseIcon from '@mui/icons-material/Close';
 import SaveIcon from '@mui/icons-material/Save';
-import {handleInputChange} from "react-select/dist/declarations/src/utils";
 import {ICourse} from "../../models/ICourse";
+import {useCreateLessonMutation, useGetAllCoursesQuery} from "../../services/teacherAPI";
 
 const Transition = React.forwardRef(function Transition(props: TransitionProps & {
     children: React.ReactElement;
@@ -22,22 +22,30 @@ interface CourseField extends ICourse {
 }
 
 const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
-    const [name, setName] = useState({text: '', error: false});
-    const [about, setAbout] = useState({text: '', error: false});
-    const [course, setCourse] = useState<CourseField>({name: '', error: false});
+    const [name, setName] = useState({title: '', error: false});
+    const [about, setAbout] = useState({description: '', error: false});
+    const [course, setCourse] = useState<CourseField>({title: '', error: false});
     const [courseInputValue, setCourseInputValue] = useState('');
+
+    const {data: courses} = useGetAllCoursesQuery('')
+    const [create, {isLoading, isError, isSuccess}] = useCreateLessonMutation()
+
+    useEffect(() => {
+
+    }, [isSuccess]);
+
 
     const saveLesson = async () => {
         let isError = false
-        if (!name.text) {
+        if (!name.title) {
             isError = true
             setName(prev => ({...prev, error: true}))
         }
-        if (!about.text) {
+        if (!about.description) {
             isError = true
             setAbout(prev => ({...prev, error: true}))
         }
-        if (!course.name) {
+        if (!course.title) {
             isError = true
             setCourse(prev => ({...prev, error: true}))
         }
@@ -45,22 +53,27 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
         if (isError) {
             return
         }
+        const data = {
+            title: name.title,
+            description: about.description,
+            course_id: course.id
+        }
+        await create(data)
         //todo api
         defaultValues()
         onClose()
     };
 
     const handlerName = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setName(prev => ({...prev, text: e.target.value, error: false}))
+        setName(prev => ({...prev, title: e.target.value, error: false}))
     };
 
     const handlerAbout = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setAbout(prev => ({...prev, text: e.target.value, error: false}))
+        setAbout(prev => ({...prev, description: e.target.value, error: false}))
     };
 
-    const handleCourse = (e: any, newValue: string | null) => {
-        setCourse({...course, name: newValue})
-        //setCourse({...course, value: e.target.value, error: false})
+    const handleCourse = (e: any, newValue: CourseField | null) => {
+        setCourse({...course, title: (newValue && newValue.title) || '', id: newValue?.id, error: false})
     };
 
     const handleClose = () => {
@@ -69,9 +82,9 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
     }
 
     const defaultValues = () => {
-        setName({text: '', error: false})
-        setAbout({text: '', error: false})
-        setCourse({name: '', error: false})
+        setName({title: '', error: false})
+        setAbout({description: '', error: false})
+        setCourse({title: '', error: false})
     }
 
     return (
@@ -107,7 +120,7 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
                         variant = 'filled'
                         required
                         onChange = {handlerName}
-                        value = {name.text}
+                        value = {name.title}
                         error = {name.error}
                     />
                 </Box>
@@ -117,7 +130,7 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
                         variant = 'filled'
                         required
                         onChange = {handlerAbout}
-                        value = {about.text}
+                        value = {about.description}
                         error = {about.error}
                     />
                 </Box>
@@ -133,13 +146,15 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
                                 error = {course.error}
                             />
                         }
-                        value = {course.name}
-                        options = {['1', '2', '3']}
+                        value = {course}
+                        options = {courses}
                         onChange = {handleCourse}
                         inputValue = {courseInputValue}
                         onInputChange = {(e, newValue) => {
                             setCourseInputValue(newValue)
                         }}
+                        getOptionLabel = {(option: CourseField) => (option && option.title) || ''}
+                        //renderOption = {(option) => <span>{option.title}</span>}
                     />
                 </Box>
                 <Button

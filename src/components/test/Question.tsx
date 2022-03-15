@@ -58,20 +58,20 @@ const Question: FC<QuestionProps> = ({index, value}) => {
                 >
                     <FormGroup>
                         <FormControlLabel
-                            disabled = {value.isMultiple}
+                            disabled = {value.is_multiple}
                             control = {
                                 <Checkbox
-                                    value = {value.isExtensions}
+                                    value = {value.is_extended}
                                     onChange = {handlerExtension}
                                 />
                             }
                             label = 'is Extensions'
                         />
                         <FormControlLabel
-                            disabled = {value.isExtensions}
+                            disabled = {value.is_extended}
                             control = {
                                 <Checkbox
-                                    value = {value.isMultiple}
+                                    value = {value.is_multiple}
                                     onChange = {handlerMultiple}
                                 />
                             }
@@ -98,7 +98,7 @@ const Question: FC<QuestionProps> = ({index, value}) => {
                             />)) : null
                 }
                 <Button
-                    disabled = {value.isExtensions}
+                    disabled = {value.is_extended}
                     variant = 'outlined'
                     onClick = {handlerAddAnswer}
                 >

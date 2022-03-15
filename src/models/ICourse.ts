@@ -1,5 +1,5 @@
 export interface ICourse {
-    id?: string,
-    name: string | null,
+    id?: number,
+    title: string | null,
     lesson?: string[],
 }

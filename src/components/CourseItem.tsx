@@ -22,7 +22,7 @@ const CourseItem: FC<CourseItemProps> = ({course}) => {
                     borderRadius: 3,
                 }}
             >
-                {course.name}
+                {course.title}
             </Box>
         </Link>
     );

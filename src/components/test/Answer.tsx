@@ -40,7 +40,7 @@ const Answer: FC<AnswerProps> = ({indexQuestion, value, indexAnswer}) => {
                 <FormControlLabel
                     control = {
                         <Checkbox
-                            value = {value.isCorrect}
+                            value = {value.is_correct}
                             onChange = {handlerCorrect}
                         />
                     }

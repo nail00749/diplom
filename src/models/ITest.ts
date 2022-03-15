@@ -1,14 +1,21 @@
+export interface ITest {
+    lesson: string
+    description: string
+    questions: IQuestion[]
+
+}
+
 export interface IQuestion {
     text: string,
     answers: IAnswer[],
-    isExtensions?: boolean,
-    isMultiple?: boolean,
+    is_extended?: boolean,
+    is_multiple?: boolean,
     id?: string
 }
 
 export  interface IAnswer {
     text: string,
-    isCorrect?: boolean,
+    is_correct?: boolean,
     id?: string
 
 }

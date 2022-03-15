@@ -7,9 +7,8 @@ import {
     Box,
     TextField,
     Button,
-    MenuItem,
     Grid,
-    useMediaQuery
+    useMediaQuery, Autocomplete
 } from "@mui/material";
 import {TransitionProps} from '@mui/material/transitions';
 import CloseIcon from '@mui/icons-material/Close';
@@ -18,6 +17,8 @@ import {useTypedSelector} from "../../hooks/redux";
 import {useDispatch} from "react-redux";
 import {addQuestion, resetForm} from "../../store/reducers/testCreate/TestSlice";
 import Question from "../test/Question";
+import {useGetAllLessonsQuery} from "../../services/teacherAPI";
+import {ILesson} from "../../models/ILesson";
 
 const Transition = React.forwardRef(function Transition(props: TransitionProps & {
     children: React.ReactElement;
@@ -30,26 +31,33 @@ interface CourseCreateProps {
     onClose: () => void
 }
 
+interface LessonField extends ILesson {
+    error: boolean
+}
+
 const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
-    const [name, setName] = useState({text: '', error: false});
-    const [about, setAbout] = useState({text: '', error: false});
-    const [lesson, setLesson] = useState({value: '', error: false});
+    const [name, setName] = useState({description: '', error: false});
+    const [about, setAbout] = useState({description: '', error: false});
+    const [lesson, setLesson] = useState<LessonField>({title: '', error: false});
     const {questions} = useTypedSelector(state => state.testReducer)
+    const [lessonInputValue, setLessonInputValue] = useState('');
+
+    const {data: lessons} = useGetAllLessonsQuery('')
     const dispatch = useDispatch()
 
     const matches = useMediaQuery('(max-width: 425px)')
 
     const saveTest = async () => {
         let isError = false
-        if (!name.text) {
+        if (!name.description) {
             isError = true
             setName(prev => ({...prev, error: true}))
         }
-        if (!about.text) {
+        if (!about.description) {
             isError = true
             setAbout(prev => ({...prev, error: true}))
         }
-        if (!lesson.value) {
+        if (!lesson.title) {
             isError = true
             setLesson(prev => ({...prev, error: true}))
         }
@@ -60,19 +68,27 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
         //todo api
         defaultValue()
         dispatch(resetForm())
+        const data = {
+            lesson_id: lesson.id,
+            description: about.description,
+            questions: questions
+        }
+        console.log(JSON.stringify(data))
+
+
         onClose()
     };
 
     const handlerName = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setName(prev => ({...prev, text: e.target.value, error: false}))
+        setName(prev => ({...prev, description: e.target.value, error: false}))
     };
 
     const handlerAbout = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setAbout(prev => ({...prev, text: e.target.value, error: false}))
+        setAbout(prev => ({...prev, description: e.target.value, error: false}))
     };
 
-    const handleCourse = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setLesson({...lesson, value: e.target.value, error: false})
+    const handleLesson = (e: any, newValue: LessonField | null) => {
+        setLesson({...lesson, title: (newValue && newValue.title) || '', id: newValue?.id, error: false})
     };
 
     const handlerAdd = () => {
@@ -85,9 +101,9 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
     }
 
     const defaultValue = () => {
-        setName({text: '', error: false})
-        setAbout({text: '', error: false})
-        setLesson({value: '', error: false})
+        setName({description: '', error: false})
+        setAbout({description: '', error: false})
+        setLesson({title: '', error: false})
     }
 
     return (
@@ -128,7 +144,7 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
                                 variant = 'filled'
                                 required
                                 onChange = {handlerName}
-                                value = {name.text}
+                                value = {name.description}
                                 error = {name.error}
                                 fullWidth
                             />
@@ -141,7 +157,7 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
                                 variant = 'filled'
                                 required
                                 onChange = {handlerAbout}
-                                value = {about.text}
+                                value = {about.description}
                                 error = {about.error}
                                 fullWidth
                             />
@@ -149,23 +165,27 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
                     </Grid>
                     <Grid item xs = {12} md = {6} lg = {4}>
                         <Box mb = {3}>
-                            <TextField
-                                id = "outlined-select-currency"
-                                select
-                                variant = 'filled'
-                                label = "Lesson"
-                                value = {lesson.value}
-                                onChange = {handleCourse}
-                                required
-                                fullWidth
-                                error = {lesson.error}
-                            >
-                                {[1, 2, 3].map((option) => (
-                                    <MenuItem key = {option} value = {option}>
-                                        {option}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
+                            <Autocomplete
+                                renderInput = {params =>
+                                    <TextField
+                                        {...params}
+                                        label = 'Course'
+                                        variant = 'filled'
+                                        required
+                                        fullWidth
+                                        error = {lesson.error}
+                                    />
+                                }
+                                value = {lesson}
+                                options = {lessons}
+                                onChange = {handleLesson}
+                                inputValue = {lessonInputValue}
+                                onInputChange = {(e, newValue) => {
+                                    setLessonInputValue(newValue)
+                                }}
+                                getOptionLabel = {(option: LessonField) => (option && option.title) || ''}
+                                //renderOption = {(option) => <span>{option.title}</span>}
+                            />
                         </Box>
                     </Grid>
                 </Grid>

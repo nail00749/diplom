@@ -21,8 +21,8 @@ const CourseContainer: FC = () => {
             </Typography>
             {
                 [{
-                    id: 'string',
-                    name: 'Course 1',
+                    id: 1,
+                    title: 'Course 1',
                     lesson: ['123', '123']
                 } as ICourse].map((course) =>
                     <CourseItem
