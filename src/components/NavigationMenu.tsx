@@ -3,21 +3,21 @@ import {Link} from 'react-router-dom'
 import {
     Box,
     SwipeableDrawer,
-    Button,
     List,
     ListItemIcon,
     ListItemText,
     ListItemButton,
-    AppBar,
-    Toolbar, IconButton
+    IconButton
 } from '@mui/material';
 import DehazeIcon from '@mui/icons-material/Dehaze';
 import {linksNavigationUser, linksNavigationAdmin} from "../router/router";
 import SwitchToggleTheme from "./SwitchToggleTheme";
+import {useTypedSelector} from "../hooks/redux";
 
 const NavigationMenu: FC = () => {
     const [state, setState] = useState<boolean>(false);
     const [selectedLinkIndex, setSelectedLinkIndex] = useState(0);
+    const {user} = useTypedSelector(state => state.userReducer)
 
     const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
         if (event && event.type === 'keydown' &&
@@ -32,7 +32,7 @@ const NavigationMenu: FC = () => {
             <>
                 <IconButton
                     onClick = {toggleDrawer(true)}
-                    color='default'
+                    color = 'default'
                 >
                     <DehazeIcon/>
                 </IconButton>
@@ -78,6 +78,7 @@ const NavigationMenu: FC = () => {
                                 )
                             }
                             {
+                                (user && (user.role === 'teacher' || user.role === 'admin')) &&
                                 linksNavigationAdmin.map((item, index) =>
                                     <Link
                                         key = {item.text}
@@ -85,13 +86,13 @@ const NavigationMenu: FC = () => {
                                     >
                                         <ListItemButton
                                             selected = {selectedLinkIndex === index + linksNavigationUser.length}
-                                            onClick = {() => setSelectedLinkIndex(index+linksNavigationUser.length)}
+                                            onClick = {() => setSelectedLinkIndex(index + linksNavigationUser.length)}
                                         >
                                             {
                                                 item.icon &&
-					                            <ListItemIcon>
-						                            <item.icon/>
-					                            </ListItemIcon>
+												<ListItemIcon>
+													<item.icon/>
+												</ListItemIcon>
                                             }
                                             <ListItemText
                                                 primary = {item.text}

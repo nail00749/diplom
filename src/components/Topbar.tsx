@@ -2,19 +2,21 @@ import React, {FC, useState} from 'react'
 import {AppBar, Box, IconButton, Menu, MenuItem, Toolbar, Tooltip, Typography} from "@mui/material";
 import NavigationMenu from "./NavigationMenu";
 import {AccountCircle} from "@mui/icons-material";
-import { useNavigate  } from "react-router-dom";
+import {useAppDispatch} from "../hooks/redux";
+import {logOut} from "../store/reducers/user/UserSlice";
 
 const Topbar: FC = () => {
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
-    const navigate = useNavigate ()
+    const dispatch = useAppDispatch()
 
-    const handlerOpenMenu = (e: React.MouseEvent<HTMLElement>) => {
-        setAnchorElUser(e.currentTarget)
-    }
+    const handlerOpenMenu = (e: React.MouseEvent<HTMLElement>) => setAnchorElUser(e.currentTarget)
 
-    const handleCloseMenu = () => {
-        setAnchorElUser(null)
-    }
+
+    const handleCloseMenu = () => setAnchorElUser(null)
+
+
+    const handlerLogOut = () => dispatch(logOut())
+
 
     return (
         <AppBar
@@ -57,11 +59,8 @@ const Topbar: FC = () => {
                             onClose = {handleCloseMenu}
                         >
                             <MenuItem
-                                onClick={()=> navigate('/profile')}
+                                onClick = {handlerLogOut}
                             >
-                                <Typography>Profile</Typography>
-                            </MenuItem>
-                            <MenuItem>
                                 <Typography>Log out</Typography>
                             </MenuItem>
                         </Menu>

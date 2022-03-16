@@ -5,7 +5,7 @@ import {useTypedSelector} from "../hooks/redux";
 import Topbar from "./Topbar";
 
 const AppRouter: FC = () => {
-    const {isAuthenticated} = useTypedSelector(state => state.userReducer)
+    const {isAuthenticated, user} = useTypedSelector(state => state.userReducer)
 
     return (
         <BrowserRouter>
@@ -40,6 +40,7 @@ const AppRouter: FC = () => {
                             )
                         }
                         {
+                            (user && (user.role === 'teacher' || user.role === 'admin')) &&
                             adminRoutes.map(route =>
                                 <Route
                                     path = {route.path}
