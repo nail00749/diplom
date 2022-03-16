@@ -13,24 +13,35 @@ export const teacherAPI = createApi({
             return headers
         }
     }),
-    tagTypes: ['User'],
+    tagTypes: ['Course', 'Lesson', 'Test'],
     endpoints: (build) => ({
         getAllCourses: build.query({
-            query: () => '/courses'
+            query: () => '/courses',
+            providesTags: () => ['Course']
         }),
         createCourse: build.mutation({
             query: (body) => ({
                 url: '/courses',
                 method: 'POST',
                 body
-            })
+            }),
+            invalidatesTags: ['Course']
         }),
         getAllLessons: build.query({
-            query: () =>'/lessons'
+            query: () =>'/lessons',
+            providesTags: () => ['Lesson']
         }),
         createLesson: build.mutation({
             query: (body) => ({
                 url: '/lessons',
+                method: 'POST',
+                body
+            }),
+            invalidatesTags: ['Lesson']
+        }),
+        createTest: build.mutation({
+            query: (body) => ({
+                url: '/tests',
                 method: 'POST',
                 body
             })
@@ -42,7 +53,8 @@ export const {
     useCreateCourseMutation,
     useGetAllCoursesQuery,
     useCreateLessonMutation,
-    useGetAllLessonsQuery
+    useGetAllLessonsQuery,
+    useCreateTestMutation
 } = teacherAPI
 
 export const {endpoints, reducerPath, reducer, middleware} = teacherAPI

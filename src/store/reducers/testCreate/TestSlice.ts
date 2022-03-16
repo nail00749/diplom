@@ -48,9 +48,7 @@ export const testSlice = createSlice({
         multipleChange: (state, action: PayloadAction<number>) => {
             state.questions[action.payload].is_multiple = !state.questions[action.payload].is_multiple
         },
-        resetForm: (state) => {
-            state = initialState
-        },
+        resetForm: () => initialState,
         addAnswer: (state, action: PayloadAction<number>) => {
             const answer: IAnswer = {
                 text: '',
@@ -60,10 +58,8 @@ export const testSlice = createSlice({
             state.questions[action.payload].answers.push(answer)
         },
         deleteAnswer: (state, action: PayloadAction<IAnswerPayload>) => {
-            const answers = [...state.questions[action.payload.indexQuestion].answers]
+            state.questions[action.payload.indexQuestion].answers = [...state.questions[action.payload.indexQuestion].answers]
                 .filter((_, i) => i !== action.payload.indexAnswer)
-
-            state.questions[action.payload.indexQuestion].answers = answers
         },
         textAnswer: (state, action: PayloadAction<IAnswerPayload>) => {
             const answers = [...state.questions[action.payload.indexQuestion].answers]

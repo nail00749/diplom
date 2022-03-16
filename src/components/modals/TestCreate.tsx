@@ -17,7 +17,7 @@ import {useTypedSelector} from "../../hooks/redux";
 import {useDispatch} from "react-redux";
 import {addQuestion, resetForm} from "../../store/reducers/testCreate/TestSlice";
 import Question from "../test/Question";
-import {useGetAllLessonsQuery} from "../../services/teacherAPI";
+import {useCreateTestMutation, useGetAllLessonsQuery} from "../../services/teacherAPI";
 import {ILesson} from "../../models/ILesson";
 
 const Transition = React.forwardRef(function Transition(props: TransitionProps & {
@@ -42,8 +42,9 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
     const {questions} = useTypedSelector(state => state.testReducer)
     const [lessonInputValue, setLessonInputValue] = useState('');
 
-    const {data: lessons} = useGetAllLessonsQuery('')
     const dispatch = useDispatch()
+    const {data: lessons} = useGetAllLessonsQuery('')
+    const [create, {isError, isLoading, isSuccess}] = useCreateTestMutation()
 
     const matches = useMediaQuery('(max-width: 425px)')
 
@@ -73,7 +74,7 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
             description: about.description,
             questions: questions
         }
-        console.log(JSON.stringify(data))
+        await create(data)
 
 
         onClose()
@@ -169,7 +170,7 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
                                 renderInput = {params =>
                                     <TextField
                                         {...params}
-                                        label = 'Course'
+                                        label = 'Lesson'
                                         variant = 'filled'
                                         required
                                         fullWidth
