@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.js": "/diplom/static/js/main.63bbf919.js",
+    "main.js": "/diplom/static/js/main.98e43ba4.js",
     "index.html": "/diplom/index.html",
-    "main.63bbf919.js.map": "/diplom/static/js/main.63bbf919.js.map"
+    "main.98e43ba4.js.map": "/diplom/static/js/main.98e43ba4.js.map"
   },
   "entrypoints": [
-    "static/js/main.63bbf919.js"
+    "static/js/main.98e43ba4.js"
   ]
 }
