@@ -10,9 +10,9 @@ import {
     IconButton
 } from '@mui/material';
 import DehazeIcon from '@mui/icons-material/Dehaze';
-import {linksNavigationUser, linksNavigationAdmin} from "../router/router";
+import {linksNavigationUser, linksNavigationAdmin} from "../../router/router";
 import SwitchToggleTheme from "./SwitchToggleTheme";
-import {useTypedSelector} from "../hooks/redux";
+import {useTypedSelector} from "../../hooks/redux";
 
 const NavigationMenu: FC = () => {
     const [state, setState] = useState<boolean>(false);

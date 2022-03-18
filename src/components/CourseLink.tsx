@@ -3,13 +3,12 @@ import {Box} from "@mui/material";
 import {ICourse} from "../models/ICourse";
 import {Link} from "react-router-dom";
 
-interface CourseItemProps {
+interface CourseLinkProps {
     course: ICourse
 }
 
 
-const CourseItem: FC<CourseItemProps> = ({course}) => {
-
+const CourseLink: FC<CourseLinkProps> = ({course}) => {
     return (
         <Link
             to = {`/course/${course.id}`}
@@ -28,4 +27,4 @@ const CourseItem: FC<CourseItemProps> = ({course}) => {
     );
 };
 
-export default CourseItem;
+export default CourseLink;

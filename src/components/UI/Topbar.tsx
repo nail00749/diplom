@@ -1,9 +1,9 @@
 import React, {FC, useState} from 'react'
 import {AppBar, Box, IconButton, Menu, MenuItem, Toolbar, Tooltip, Typography} from "@mui/material";
-import NavigationMenu from "./NavigationMenu";
 import {AccountCircle} from "@mui/icons-material";
-import {useAppDispatch} from "../hooks/redux";
-import {logOut} from "../store/reducers/user/UserSlice";
+import {useAppDispatch} from "../../hooks/redux";
+import {logOut} from "../../store/reducers/user/UserSlice";
+import NavigationMenu from "./NavigationMenu";
 
 const Topbar: FC = () => {
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
@@ -11,12 +11,9 @@ const Topbar: FC = () => {
 
     const handlerOpenMenu = (e: React.MouseEvent<HTMLElement>) => setAnchorElUser(e.currentTarget)
 
-
     const handleCloseMenu = () => setAnchorElUser(null)
 
-
     const handlerLogOut = () => dispatch(logOut())
-
 
     return (
         <AppBar
@@ -32,7 +29,6 @@ const Topbar: FC = () => {
                             justifyContent: 'flex-end',
                             width: '100%'
                         }}
-
                     >
                         <Tooltip title = {'open'}>
                             <IconButton
