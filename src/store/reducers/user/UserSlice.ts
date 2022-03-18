@@ -41,11 +41,21 @@ export const userSlice = createSlice({
         fetchUpdateData: (state, action) => {
             const copy = {...state.user, ...action.payload}
             state.user = copy
+        },
+        logOut: (state) => {
+            localStorage.clear()
+            Object.assign(state, initialState)
         }
-
-    },
+    }
 })
 
-export const {fetchAuthSuccess, fetchAuthLoading, fetchAuthError, fetchMeData, fetchUpdateData} = userSlice.actions
+export const {
+    fetchAuthSuccess,
+    fetchAuthLoading,
+    fetchAuthError,
+    fetchMeData,
+    fetchUpdateData,
+    logOut
+} = userSlice.actions
 
 export default userSlice.reducer
