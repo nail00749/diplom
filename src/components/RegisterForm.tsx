@@ -1,17 +1,13 @@
-import React, {FC, useState} from 'react';
-import {
-    Box,
-    Button,
-    InputAdornment,
-    FormControl,
-    OutlinedInput,
-    IconButton,
-    InputLabel
-} from "@mui/material";
-import {AccountCircle, VisibilityOff, Visibility} from '@mui/icons-material';
+import React, {FC, useEffect, useState} from 'react';
+import {Box, Button, FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput,} from "@mui/material";
+import {AccountCircle, Visibility, VisibilityOff} from '@mui/icons-material';
 import {useRegisterMutation} from "../services/userAPI";
 import LoadingButton from "@mui/lab/LoadingButton";
 import RegisterSuccess from "./modals/RegisterSuccess";
+import {validateEmail} from "../utils";
+import {showErrorAlert} from "../store/reducers/service/ServiceSlice";
+import {useAppDispatch} from "../hooks/redux";
+
 
 interface FormProps {
     setIsLogin: () => void
@@ -19,29 +15,54 @@ interface FormProps {
 
 const RegisterForm: FC<FormProps> = ({setIsLogin}) => {
     const [username, setUsername] = useState<string>('');
+    const [usernameError, setUsernameError] = useState(false);
     const [password, setPassword] = useState<string>('');
+    const [passwordError, setPasswordError] = useState(false);
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [isOpenSuccess, setIsOpenSuccess] = useState(false);
+    const dispatch = useAppDispatch()
 
-    const [register, {isLoading, isError}] = useRegisterMutation()
+    const [register, {isLoading, isSuccess}] = useRegisterMutation()
+
+    useEffect(() => {
+        if (isSuccess) {
+            setIsOpenSuccess(true)
+        }
+
+    }, [isSuccess]);
+
 
     const handlerLogin = (e: React.ChangeEvent<HTMLInputElement>) => {
         setUsername(e.target.value);
+        setUsernameError(false)
     }
 
     const handlerPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPassword(e.target.value)
+        setPasswordError(false)
     }
 
     const sendData = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
+        let error = ''
+        if (!validateEmail(username)) {
+            setUsernameError(true)
+            error += 'not valid email'
+        }
+        //todo password check
+        if (!password) {
+            setPasswordError(true)
+            error += ' length password error'
+        }
+        if (error) {
+            dispatch(showErrorAlert(error))
+            return
+        }
         const data = {
             email: username,
             password
         }
         await register(data)
-        setIsOpenSuccess(true)
-        //todo data error
     }
 
     const handlerShowPassword = () => {
@@ -79,6 +100,7 @@ const RegisterForm: FC<FormProps> = ({setIsLogin}) => {
                                 </InputAdornment>
                             }
                             label = "email"
+                            error = {usernameError}
                         />
                     </FormControl>
                 </Box>
@@ -103,6 +125,7 @@ const RegisterForm: FC<FormProps> = ({setIsLogin}) => {
                                 </InputAdornment>
                             }
                             label = "Password"
+                            error = {passwordError}
                         />
                     </FormControl>
                 </Box>
@@ -134,6 +157,24 @@ const RegisterForm: FC<FormProps> = ({setIsLogin}) => {
                     {'Log in'}
                 </Button>
             </Box>
+
+            {
+                /*(isError && error && error?.data) &&
+		        <Collapse
+			        in = {true}
+			        sx = {{
+                        position: 'fixed',
+                        bottom: 50
+                    }}
+		        >
+			        <Alert
+				        severity = 'error'
+			        >
+                        {error.data.detail}
+			        </Alert>
+		        </Collapse>*/
+            }
+
             <RegisterSuccess
                 open = {isOpenSuccess}
                 setClose = {setIsOpenSuccess}

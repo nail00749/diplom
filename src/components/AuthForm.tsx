@@ -6,12 +6,14 @@ import {
     FormControl,
     OutlinedInput,
     IconButton,
-    InputLabel, Collapse, Alert
+    InputLabel,
 } from "@mui/material";
 import {AccountCircle, VisibilityOff, Visibility} from '@mui/icons-material';
 import LoadingButton from '@mui/lab/LoadingButton';
-import {userAPI} from "../services/userAPI";
-import {useTypedSelector} from "../hooks/redux";
+import {useLoginMutation} from "../services/userAPI";
+import {validateEmail} from "../utils";
+import {showErrorAlert} from "../store/reducers/service/ServiceSlice";
+import {useAppDispatch} from "../hooks/redux";
 
 type FormProps = {
     setIsLogin: () => void
@@ -19,27 +21,45 @@ type FormProps = {
 
 const AuthForm: FC<FormProps> = (props) => {
     const [username, setUsername] = useState<string>('');
+    const [usernameError, setUsernameError] = useState(false);
     const [password, setPassword] = useState<string>('');
+    const [passwordError, setPasswordError] = useState(false);
     const [showPassword, setShowPassword] = useState<boolean>(false);
-    const [login, {isLoading, isError}] = userAPI.useLoginMutation()
-    const {error} = useTypedSelector(state => state.userReducer)
+    const [login, {isLoading}] = useLoginMutation()
+    const dispatch = useAppDispatch()
 
     const handlerLogin = (e: React.ChangeEvent<HTMLInputElement>) => {
         setUsername(e.target.value);
+        setUsernameError(false)
     }
 
     const handlerPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPassword(e.target.value)
+        setPasswordError(false)
     }
 
     const sendData = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        //todo
+        let error = ''
+        if (!validateEmail(username)) {
+            setUsernameError(true)
+            error += 'not valid email'
+        }
+        //todo password check
+        if (!password) {
+            setPasswordError(true)
+            error += ' length password error'
+        }
+        if (error) {
+            dispatch(showErrorAlert(error))
+            return
+        }
+
+
         const data = new FormData()
         data.append('username', username)
         data.append('password', password)
         await login(data)
-        //console.log(error)
     }
 
     const handlerShowPassword = () => {
@@ -78,6 +98,7 @@ const AuthForm: FC<FormProps> = (props) => {
                             }
                             label = "email"
                             autoComplete = {'username'}
+                            error = {usernameError}
                         />
                     </FormControl>
                 </Box>
@@ -103,6 +124,7 @@ const AuthForm: FC<FormProps> = (props) => {
                             }
                             label = "Password"
                             autoComplete = {'current-password'}
+                            error = {passwordError}
                         />
                     </FormControl>
                 </Box>
@@ -135,22 +157,6 @@ const AuthForm: FC<FormProps> = (props) => {
                     {'Sign up'}
                 </Button>
             </Box>
-            {
-                isError &&
-				<Collapse
-					in = {true}
-					sx = {{
-                        position: 'fixed',
-                        bottom: 50
-                    }}
-				>
-					<Alert
-						severity = 'error'
-					>
-                        {error}
-					</Alert>
-				</Collapse>
-            }
         </>
 
     );
