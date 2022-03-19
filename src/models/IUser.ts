@@ -5,6 +5,7 @@ export interface IUser {
     password?: string
     role?: 'user' | 'teacher' | 'admin'
     name?: string
-    surname?: string,
+    surname?: string
     telegram?: string
+    avatar_path: string | null
 }

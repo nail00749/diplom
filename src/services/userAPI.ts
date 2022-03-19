@@ -7,6 +7,7 @@ import {
     fetchMeData,
     fetchUpdateData
 } from "../store/reducers/user/UserSlice";
+import {IUser} from "../models/IUser";
 
 export const userAPI = createApi({
     reducerPath: 'userAPI',
@@ -65,9 +66,20 @@ export const userAPI = createApi({
                 dispatch(fetchMeData(data))
             }
         }),
+        updateAvatar: build.mutation<IUser, FormData>({
+            query: (body) => ({
+                url: '/users/avatar',
+                method: "PATCH",
+                body
+            }),
+            async onQueryStarted(_, {dispatch, queryFulfilled}) {
+                const {data} = await queryFulfilled
+                dispatch(fetchUpdateData(data))
+            }
+        })
     })
 })
 
-export const {useLoginMutation, useRegisterMutation, useGetMeDataQuery, useUpdateMutation} = userAPI
+export const {useLoginMutation, useRegisterMutation, useGetMeDataQuery, useUpdateMutation, useUpdateAvatarMutation} = userAPI
 
-export const {endpoints, reducerPath, reducer, middleware} = userAPI
+export const {reducer, middleware} = userAPI

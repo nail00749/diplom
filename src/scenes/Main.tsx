@@ -1,8 +1,7 @@
 import React, {FC} from 'react';
 import CourseContainer from "../components/CourseContainer";
-import StreamContainer from "../components/StreamContainer";
 import {Grid, useMediaQuery} from "@mui/material";
-import Profile from "../components/Profile";
+import Profile from "../components/user/Profile";
 
 const Main: FC = () => {
     const matches = useMediaQuery('(max-width: 425px)')

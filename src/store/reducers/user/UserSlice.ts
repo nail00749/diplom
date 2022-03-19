@@ -2,7 +2,7 @@ import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {IUser} from "../../../models/IUser";
 
 interface UserState {
-    user?: IUser,
+    user: IUser,
     isAuthenticated: boolean,
     isLoading: boolean,
     error: string,
@@ -14,6 +14,7 @@ const initialState: UserState = {
     isLoading: false,
     user: {
         email: "",
+        avatar_path: null
     },
     error: '',
     token: ''
@@ -39,8 +40,7 @@ export const userSlice = createSlice({
             state.user = action.payload
         },
         fetchUpdateData: (state, action) => {
-            const copy = {...state.user, ...action.payload}
-            state.user = copy
+            state.user = {...state.user, ...action.payload}
         },
         logOut: (state) => {
             localStorage.clear()
