@@ -7,7 +7,7 @@ import {
     extensionChange,
     multipleChange,
     addAnswer
-} from "../../store/reducers/testCreate/TestSlice";
+} from "../../store/reducers/admin/testSlice";
 import {useAppDispatch} from "../../hooks/redux";
 import {IQuestion} from "../../models/ITest";
 import Answer from "./Answer";

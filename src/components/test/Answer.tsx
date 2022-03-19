@@ -3,7 +3,7 @@ import {Box, Checkbox, FormControlLabel, IconButton, TextField} from "@mui/mater
 import CloseIcon from "@mui/icons-material/Close";
 import {IAnswer} from "../../models/ITest";
 import {useAppDispatch} from "../../hooks/redux";
-import {correctAnswer, deleteAnswer, textAnswer} from "../../store/reducers/testCreate/TestSlice";
+import {correctAnswer, deleteAnswer, textAnswer} from "../../store/reducers/admin/testSlice";
 
 interface AnswerProps {
     indexQuestion: number,

@@ -1,14 +1,15 @@
 import React, {FC, useState} from 'react';
 import {Box, Button, ButtonGroup, Container} from "@mui/material";
-import CourseCreate from "../components/modals/CourseCreate";
 import LessonCreate from "../components/modals/LessonCreate";
 import TestCreate from "../components/modals/TestCreate";
+import {useAppDispatch} from "../hooks/redux";
+import {openModal as openCourse} from "../store/reducers/admin/courseSlice";
 
 const Admin: FC = () => {
-    const [isCourseModal, setIsCourseModal] = useState<boolean>(false);
+    const dispatch = useAppDispatch()
     const [isLessonModal, setIsLessonModal] = useState<boolean>(false);
     const [isTestModal, setIsTestModal] = useState<boolean>(false);
-    const onCloseCourse = () => setIsCourseModal(false)
+
     const onCloseLesson = () => setIsLessonModal(false)
     const onCloseTest = () => setIsTestModal(false)
 
@@ -23,7 +24,7 @@ const Admin: FC = () => {
                         <Box mb = {2}>
                             <Button
                                 variant = 'contained'
-                                onClick = {() => setIsCourseModal(prev => !prev)}
+                                onClick = {() => dispatch(openCourse())}
                             >
                                 Create course
                             </Button>
@@ -48,10 +49,10 @@ const Admin: FC = () => {
                 </Container>
             </Box>
 
-            <CourseCreate
+            {/*<CourseCreate
                 open = {isCourseModal}
                 onClose = {onCloseCourse}
-            />
+            />*/}
             <LessonCreate
                 open = {isLessonModal}
                 onClose = {onCloseLesson}
