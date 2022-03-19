@@ -1,5 +1,6 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {ICourse} from "../../../models/ICourse";
+import {ILesson} from "../../../models/ILesson";
 
 interface lessonAdmin {
     open: boolean
@@ -14,10 +15,9 @@ interface lessonAdmin {
 }
 
 interface actionOpen {
-    title: string | null
-    description: string | null
+    lesson: ILesson
     isUpdate?: boolean | undefined
-    id?: number | undefined
+    courses?: ICourse[] | null | undefined
 }
 
 const initialState: lessonAdmin = {
@@ -38,12 +38,14 @@ export const lessonAdminAPI = createSlice({
     reducers: {
         openModal: (state, action: PayloadAction<actionOpen | undefined>) => {
             if (action.payload) {
-                const {title, description, isUpdate, id} = action.payload
+                const {lesson, isUpdate,courses} = action.payload
                 state.isUpdate = isUpdate
                 if (isUpdate) {
-                    state.title = title
-                    state.description = description
-                    state.id = id
+                    state.title = lesson.title
+                    state.description = lesson.description
+                    state.id = lesson.id
+                    const course = courses?.find(i => i.id === lesson.course_id)
+                    state.course = course as ICourse
                 }
             }
             state.open = true

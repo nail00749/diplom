@@ -25,19 +25,16 @@ interface CourseCreateProps {
     onClose: () => void
 }
 
-interface LessonField extends ILesson {
-    error: boolean
-}
 
 const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
     const [name, setName] = useState({description: '', error: false});
     const [about, setAbout] = useState({description: '', error: false});
-    const [lesson, setLesson] = useState<LessonField>({title: '', error: false});
+    const [lesson, setLesson] = useState<ILesson | null>(null);
     const {questions} = useAppSelector(state => state.testReducer)
     const [lessonInputValue, setLessonInputValue] = useState('');
 
     const dispatch = useDispatch()
-    const {data: lessons} = useGetAllLessonsQuery('')
+    const {data: lessons} = useGetAllLessonsQuery()
     const [create, {isError, isLoading, isSuccess}] = useCreateTestMutation()
 
     const matches = useMediaQuery('(max-width: 425px)')
@@ -52,10 +49,7 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
             isError = true
             setAbout(prev => ({...prev, error: true}))
         }
-        if (!lesson.title) {
-            isError = true
-            setLesson(prev => ({...prev, error: true}))
-        }
+
 
         if (isError) {
             return
@@ -64,7 +58,7 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
         defaultValue()
         dispatch(resetForm())
         const data = {
-            lesson_id: lesson.id,
+            lesson_id: lesson!.id,
             description: about.description,
             questions: questions
         }
@@ -82,8 +76,8 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
         setAbout(prev => ({...prev, description: e.target.value, error: false}))
     };
 
-    const handleLesson = (e: any, newValue: LessonField | null) => {
-        setLesson({...lesson, title: (newValue && newValue.title) || '', id: newValue?.id, error: false})
+    const handleLesson = (e: any, newValue: ILesson | null) => {
+        //setLesson({...lesson, title: (newValue && newValue.title) || '', id: newValue?.id,})
     };
 
     const handlerAdd = () => {
@@ -96,9 +90,7 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
     }
 
     const defaultValue = () => {
-        setName({description: '', error: false})
-        setAbout({description: '', error: false})
-        setLesson({title: '', error: false})
+
     }
 
     return (
@@ -168,17 +160,17 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
                                         variant = 'filled'
                                         required
                                         fullWidth
-                                        error = {lesson.error}
+                                        //error = {lesson.error}
                                     />
                                 }
                                 value = {lesson}
-                                options = {lessons}
+                                options = {lessons as readonly  ILesson[]}
                                 onChange = {handleLesson}
                                 inputValue = {lessonInputValue}
                                 onInputChange = {(e, newValue) => {
                                     setLessonInputValue(newValue)
                                 }}
-                                getOptionLabel = {(option: LessonField) => (option && option.title) || ''}
+                                getOptionLabel = {(option: ILesson) => (option && option.title) || ''}
                                 //renderOption = {(option) => <span>{option.title}</span>}
                             />
                         </Box>

@@ -5,7 +5,7 @@ import {ICourse} from "../models/ICourse";
 import {useGetAllCoursesQuery} from "../services/contentAPI";
 
 const CourseContainer: FC = () => {
-    const {data: courses} = useGetAllCoursesQuery('')
+    const {data: courses} = useGetAllCoursesQuery()
 
     return (
         <Box

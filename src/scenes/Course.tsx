@@ -1,6 +1,6 @@
 import {Box, Button, Typography} from '@mui/material';
 import React, {FC, useEffect} from 'react';
-import {useNavigate, useParams} from 'react-router-dom';
+import {Link, useNavigate, useParams} from 'react-router-dom';
 import {useGetCourseQuery} from "../services/contentAPI";
 import {useAppDispatch} from "../hooks/redux";
 import {openModal} from "../store/reducers/admin/courseSlice";
@@ -43,6 +43,19 @@ const Course: FC = () => {
 					<>
 						<Typography>{course.title}</Typography>
 						<Typography>{course.description}</Typography>
+						<Box>
+                            {
+                                course.lessons && course.lessons.map(item =>
+                                    <Box>
+                                        <Link
+                                            to = {`/lesson/${item.id}`}
+                                        >
+                                            {item.title}
+                                        </Link>
+                                    </Box>
+                                )
+                            }
+						</Box>
 					</>
                 }
             </Box>

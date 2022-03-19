@@ -33,7 +33,7 @@ const CourseCreate: FC = () => {
     } = useAppSelector(state => state.lessonAdminReducer)
     const dispatch = useAppDispatch()
     const [courseInputValue, setCourseInputValue] = useState('');
-    const {data: courses} = useGetAllCoursesQuery('')
+    const {data: courses} = useGetAllCoursesQuery()
     const [create, {isLoading: isLoadingCreate, isSuccess: isSuccessCreate}] = useCreateLessonMutation()
     const [update, {isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate}] = useUpdateLessonMutation()
 
@@ -82,7 +82,8 @@ const CourseCreate: FC = () => {
 
     const handleClose = () => dispatch(closeModal())
 
-    const mock = () => {}
+    const mock = () => {
+    }
 
     return (
         <Dialog
@@ -146,7 +147,7 @@ const CourseCreate: FC = () => {
                             />
                         }
                         value = {course}
-                        options = {courses}
+                        options = {courses as readonly ICourse[]}
                         onChange = {handleCourse}
                         inputValue = {courseInputValue}
                         onInputChange = {(e, newValue) => {
