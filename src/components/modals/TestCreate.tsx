@@ -15,9 +15,10 @@ import CloseIcon from '@mui/icons-material/Close';
 import SaveIcon from '@mui/icons-material/Save';
 import {useTypedSelector} from "../../hooks/redux";
 import {useDispatch} from "react-redux";
-import {addQuestion, resetForm} from "../../store/reducers/testCreate/TestSlice";
+import {addQuestion, resetForm} from "../../store/reducers/admin/testSlice";
 import Question from "../test/Question";
-import {useCreateTestMutation, useGetAllLessonsQuery} from "../../services/teacherAPI";
+import {useCreateTestMutation} from "../../services/adminContentAPI";
+import {useGetAllLessonsQuery} from "../../services/contentAPI";
 import {ILesson} from "../../models/ILesson";
 
 const Transition = React.forwardRef(function Transition(props: TransitionProps & {

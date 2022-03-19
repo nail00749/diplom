@@ -1,9 +1,18 @@
-import React, {FC, useState} from 'react';
-import {Dialog, Slide, Typography, IconButton, Box, TextField, Button} from "@mui/material";
+import React, {FC, useEffect} from 'react';
+import {Dialog, Slide, Typography, IconButton, Box, TextField} from "@mui/material";
 import {TransitionProps} from '@mui/material/transitions';
 import CloseIcon from '@mui/icons-material/Close';
 import SaveIcon from '@mui/icons-material/Save';
-import {useCreateCourseMutation} from "../../services/teacherAPI";
+import {useCreateCourseMutation, useUpdateCourseMutation} from "../../services/adminContentAPI";
+import {useAppDispatch, useTypedSelector} from "../../hooks/redux";
+import {
+    closeModal,
+    changeName,
+    changeDescription,
+    errorTitleChange,
+    errorDescriptionChange
+} from "../../store/reducers/admin/courseSlice";
+import {LoadingButton} from "@mui/lab";
 
 const Transition = React.forwardRef(function Transition(props: TransitionProps & {
     children: React.ReactElement;
@@ -11,54 +20,66 @@ const Transition = React.forwardRef(function Transition(props: TransitionProps &
     return <Slide direction = "down" ref = {ref} {...props} />;
 });
 
-interface CourseCreateProps {
-    open: boolean,
-    onClose: () => void
-}
+const CourseCreate: FC = () => {
+    const [create, {isLoading: isLoadingCreate, isSuccess: isSuccessCreate}] = useCreateCourseMutation()
+    const [update, {isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate}] = useUpdateCourseMutation()
+    const {
+        open,
+        title,
+        description,
+        titleError,
+        descriptionError,
+        isUpdate,
+        id
+    } = useTypedSelector(state => state.courseAdminReducer)
+    const dispatch = useAppDispatch()
 
-const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
-    const [name, setName] = useState({description: '', error: false});
-    const [description, setDescription] = useState({description: '', error: false});
-    const [create, {isLoading, isError, isSuccess}] = useCreateCourseMutation()
+    useEffect(() => {
+        dispatch(handlerClose())
+    }, [isSuccessUpdate, isSuccessCreate]);
+
 
     const saveCourse = async () => {
         let isError = false
-        if (!name.description) {
+        if (!title) {
             isError = true
-            setName(prev => ({...prev, error: true}))
+            dispatch(errorTitleChange())
         }
-        if (!description.description) {
+
+        if (!description) {
             isError = true
-            setDescription(prev => ({...prev, error: true}))
+            dispatch(errorDescriptionChange())
         }
 
         if (isError) {
             return
         }
-        //todo api
-        setName({description: '', error: false})
-        setDescription({description: '', error: false})
-        await  create({
-            title: name.description,
-            description: description.description
-        })
-        onClose()
+
+        const data = {
+            title, description
+        }
+        if (isUpdate) {
+            await update({...data, id})
+        } else {
+            await create(data)
+        }
+
+        //onClose()
     };
 
-    const handlerName = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setName(prev => ({...prev, description: e.target.value, error: false}))
-    };
+    const handlerName = (e: React.ChangeEvent<HTMLInputElement>) => dispatch(changeName(e.target.value))
 
-    const handlerAbout = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setDescription(prev => ({...prev, description: e.target.value, error: false}))
-    };
+    const handlerAbout = (e: React.ChangeEvent<HTMLInputElement>) => dispatch(changeDescription(e.target.value))
+
+    const handlerClose = () => dispatch(closeModal())
+
+    const mock = () => {}
 
     return (
         <Dialog
             open = {open}
             TransitionComponent = {Transition}
-            onClose = {onClose}
-
+            onClose = {!(isLoadingUpdate || isLoadingCreate) ? mock : handlerClose}
         >
             <Box
                 p = {3}
@@ -72,12 +93,13 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
                     mb = {2}
                 >
                     <IconButton
-                        onClick = {onClose}
+                        onClick = {handlerClose}
+                        disabled = {isLoadingCreate || isLoadingUpdate}
                     >
                         <CloseIcon/>
                     </IconButton>
                     <Typography variant = 'h5' component = 'span'>
-                        Create course
+                        {`Course ${isUpdate ? 'edit' : 'create'}`}
                     </Typography>
                 </Box>
                 <Box mb = {3}>
@@ -86,8 +108,8 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
                         variant = 'filled'
                         required
                         onChange = {handlerName}
-                        value = {name.description}
-                        error = {name.error}
+                        value = {title}
+                        error = {titleError}
                     />
                 </Box>
                 <Box mb = {3}>
@@ -96,19 +118,19 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
                         variant = 'filled'
                         required
                         onChange = {handlerAbout}
-                        value = {description.description}
-                        error = {description.error}
+                        value = {description}
+                        error = {descriptionError}
                     />
                 </Box>
-                <Button
+                <LoadingButton
+                    loading = {isLoadingCreate || isLoadingUpdate}
                     variant = 'outlined'
                     color = 'success'
                     endIcon = {<SaveIcon/>}
                     onClick = {saveCourse}
                 >
                     Save
-                </Button>
-
+                </LoadingButton>
             </Box>
         </Dialog>
     )

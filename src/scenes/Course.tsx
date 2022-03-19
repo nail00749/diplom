@@ -1,13 +1,52 @@
-import React, {FC} from 'react';
-import { useParams } from 'react-router-dom';
+import {Box, Button, Typography} from '@mui/material';
+import React, {FC, useEffect} from 'react';
+import {useNavigate, useParams} from 'react-router-dom';
+import {useGetCourseQuery} from "../services/contentAPI";
+import {useAppDispatch} from "../hooks/redux";
+import {openModal} from "../store/reducers/admin/courseSlice";
 
 const Course: FC = () => {
     const {courseId} = useParams()
+    const navigate = useNavigate()
+    const {data: course} = useGetCourseQuery(String(courseId))
+    const dispatch = useAppDispatch()
+
+    useEffect(() => {
+        if (!courseId) {
+            navigate('/')
+        }
+    }, [])
+
+    const handlerEdit = () => {
+        if (course) {
+            dispatch(openModal({
+                title: course.title,
+                description: course.description,
+                isUpdate: true,
+                id: course.id
+            }))
+        }
+    }
+
 
     return (
-        <div>
-
-        </div>
+        <Box>
+            <Button
+                variant = 'outlined'
+                onClick = {handlerEdit}
+            >
+                Edit course
+            </Button>
+            <Box>
+                {
+                    course &&
+					<>
+						<Typography>{course.title}</Typography>
+						<Typography>{course.description}</Typography>
+					</>
+                }
+            </Box>
+        </Box>
     );
 };
 

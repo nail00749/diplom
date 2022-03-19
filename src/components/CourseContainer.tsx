@@ -1,9 +1,12 @@
 import {Box, Typography} from '@mui/material';
 import React, {FC} from 'react';
-import CourseItem from "./CourseItem";
+import CourseLink from "./CourseLink";
 import {ICourse} from "../models/ICourse";
+import {useGetAllCoursesQuery} from "../services/contentAPI";
 
 const CourseContainer: FC = () => {
+    const {data: courses} = useGetAllCoursesQuery('')
+
     return (
         <Box
             sx = {{
@@ -20,12 +23,9 @@ const CourseContainer: FC = () => {
                 Courses
             </Typography>
             {
-                [{
-                    id: 1,
-                    title: 'Course 1',
-                    lesson: ['123', '123']
-                } as ICourse].map((course) =>
-                    <CourseItem
+                courses &&
+                courses.map((course: ICourse) =>
+                    <CourseLink
                         key = {course.id}
                         course = {course}
                     />

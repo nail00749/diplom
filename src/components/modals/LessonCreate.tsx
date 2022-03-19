@@ -3,8 +3,8 @@ import {Dialog, Slide, Typography, IconButton, Box, TextField, Button, Autocompl
 import {TransitionProps} from '@mui/material/transitions';
 import CloseIcon from '@mui/icons-material/Close';
 import SaveIcon from '@mui/icons-material/Save';
-import {ICourse} from "../../models/ICourse";
-import {useCreateLessonMutation, useGetAllCoursesQuery} from "../../services/teacherAPI";
+import {useCreateLessonMutation} from "../../services/adminContentAPI";
+import {useGetAllCoursesQuery} from "../../services/contentAPI";
 
 const Transition = React.forwardRef(function Transition(props: TransitionProps & {
     children: React.ReactElement;
@@ -17,8 +17,10 @@ interface CourseCreateProps {
     onClose: () => void
 }
 
-interface CourseField extends ICourse {
+interface CourseField {
+    title: string
     error: boolean,
+    id?: number
 }
 
 const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
