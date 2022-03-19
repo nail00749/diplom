@@ -1,6 +1,6 @@
 import React, {FC, useState} from 'react'
 import {Box, Button, TextField, Typography} from "@mui/material";
-import {useTypedSelector} from "../../hooks/redux";
+import {useAppSelector} from "../../hooks/redux";
 import {useGetMeDataQuery, useUpdateMutation} from "../../services/userAPI";
 import {LoadingButton} from "@mui/lab";
 import UserAvatar from "./UserAvatar";
@@ -12,7 +12,7 @@ interface IUserEdit {
 }
 
 const Profile: FC = () => {
-    const {user} = useTypedSelector(state => state.userReducer)
+    const {user} = useAppSelector(state => state.userReducer)
     const [isEdit, setIsEdit] = useState(false);
     const [userData, setUserData] = useState<IUserEdit>({
         name: '',

@@ -12,12 +12,12 @@ import {
 import DehazeIcon from '@mui/icons-material/Dehaze';
 import {linksNavigationUser, linksNavigationAdmin} from "../../router/router";
 import SwitchToggleTheme from "./SwitchToggleTheme";
-import {useTypedSelector} from "../../hooks/redux";
+import {useAppSelector} from "../../hooks/redux";
 
 const NavigationMenu: FC = () => {
     const [state, setState] = useState<boolean>(false);
     const [selectedLinkIndex, setSelectedLinkIndex] = useState(0);
-    const {user} = useTypedSelector(state => state.userReducer)
+    const {user} = useAppSelector(state => state.userReducer)
 
     const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
         if (event && event.type === 'keydown' &&
