@@ -1,24 +1,18 @@
 import React, {FC, useEffect} from 'react';
-import {Dialog, Slide, Typography, IconButton, Box, TextField} from "@mui/material";
-import {TransitionProps} from '@mui/material/transitions';
+import {Dialog, Typography, IconButton, Box, TextField} from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import SaveIcon from '@mui/icons-material/Save';
-import {useCreateCourseMutation, useUpdateCourseMutation} from "../../services/adminContentAPI";
-import {useAppDispatch, useTypedSelector} from "../../hooks/redux";
+import {useCreateCourseMutation, useUpdateCourseMutation} from "../../services/adminAPI";
+import {useAppDispatch, useAppSelector} from "../../hooks/redux";
 import {
     closeModal,
-    changeName,
+    changeTitle,
     changeDescription,
     errorTitleChange,
     errorDescriptionChange
 } from "../../store/reducers/admin/courseSlice";
 import {LoadingButton} from "@mui/lab";
-
-const Transition = React.forwardRef(function Transition(props: TransitionProps & {
-    children: React.ReactElement;
-}, ref: React.Ref<unknown>) {
-    return <Slide direction = "down" ref = {ref} {...props} />;
-});
+import {Transition} from "./Transition";
 
 const CourseCreate: FC = () => {
     const [create, {isLoading: isLoadingCreate, isSuccess: isSuccessCreate}] = useCreateCourseMutation()
@@ -31,11 +25,11 @@ const CourseCreate: FC = () => {
         descriptionError,
         isUpdate,
         id
-    } = useTypedSelector(state => state.courseAdminReducer)
+    } = useAppSelector(state => state.courseAdminReducer)
     const dispatch = useAppDispatch()
 
     useEffect(() => {
-        dispatch(handlerClose())
+        dispatch(closeModal())
     }, [isSuccessUpdate, isSuccessCreate]);
 
 
@@ -63,11 +57,9 @@ const CourseCreate: FC = () => {
         } else {
             await create(data)
         }
-
-        //onClose()
     };
 
-    const handlerName = (e: React.ChangeEvent<HTMLInputElement>) => dispatch(changeName(e.target.value))
+    const handlerName = (e: React.ChangeEvent<HTMLInputElement>) => dispatch(changeTitle(e.target.value))
 
     const handlerAbout = (e: React.ChangeEvent<HTMLInputElement>) => dispatch(changeDescription(e.target.value))
 
@@ -79,7 +71,7 @@ const CourseCreate: FC = () => {
         <Dialog
             open = {open}
             TransitionComponent = {Transition}
-            onClose = {!(isLoadingUpdate || isLoadingCreate) ? mock : handlerClose}
+            onClose = {(isLoadingUpdate || isLoadingCreate) ? mock : handlerClose}
         >
             <Box
                 p = {3}
@@ -110,6 +102,7 @@ const CourseCreate: FC = () => {
                         onChange = {handlerName}
                         value = {title}
                         error = {titleError}
+                        disabled = {isLoadingCreate || isLoadingUpdate}
                     />
                 </Box>
                 <Box mb = {3}>
@@ -120,6 +113,7 @@ const CourseCreate: FC = () => {
                         onChange = {handlerAbout}
                         value = {description}
                         error = {descriptionError}
+                        disabled = {isLoadingCreate || isLoadingUpdate}
                     />
                 </Box>
                 <LoadingButton

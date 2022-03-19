@@ -1,12 +1,15 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {ICourse} from "../../../models/ICourse";
 
-interface courseAdmin {
-    open: boolean,
-    title: string | null,
-    titleError: boolean,
-    description: string | null,
-    descriptionError: boolean,
-    isUpdate: boolean | undefined,
+interface lessonAdmin {
+    open: boolean
+    title: string | null
+    titleError: boolean
+    description: string | null
+    descriptionError: boolean
+    course: ICourse | null
+    courseError: boolean
+    isUpdate: boolean | undefined
     id?: number
 }
 
@@ -17,18 +20,20 @@ interface actionOpen {
     id?: number | undefined
 }
 
-const initialState: courseAdmin = {
+const initialState: lessonAdmin = {
     open: false,
     title: '',
     titleError: false,
     description: '',
     descriptionError: false,
-    isUpdate: false
+    isUpdate: false,
+    course: null,
+    courseError: false
 }
 
 
-export const courseAdminAPI = createSlice({
-    name: 'courseAdminAPI',
+export const lessonAdminAPI = createSlice({
+    name: 'lessonAdminAPI',
     initialState,
     reducers: {
         openModal: (state, action: PayloadAction<actionOpen | undefined>) => {
@@ -41,13 +46,10 @@ export const courseAdminAPI = createSlice({
                     state.id = id
                 }
             }
-
             state.open = true
-
-
         },
         closeModal: () => initialState,
-        changeName: (state, action: PayloadAction<string>) => {
+        changeTitle: (state, action: PayloadAction<string>) => {
             state.title = action.payload
             state.titleError = false
         },
@@ -60,6 +62,13 @@ export const courseAdminAPI = createSlice({
         },
         errorDescriptionChange: (state) => {
             state.descriptionError = true
+        },
+        changeCourse: (state, action: PayloadAction<ICourse | null>) => {
+            state.course = action.payload
+            state.courseError = false
+        },
+        errorCourseChange: (state) => {
+            state.courseError = true
         }
     }
 })
@@ -67,10 +76,12 @@ export const courseAdminAPI = createSlice({
 export const {
     openModal,
     closeModal,
-    changeName: changeTitle,
+    changeTitle,
     changeDescription,
     errorDescriptionChange,
-    errorTitleChange
-} = courseAdminAPI.actions
+    errorTitleChange,
+    changeCourse,
+    errorCourseChange
+} = lessonAdminAPI.actions
 
-export default courseAdminAPI.reducer
+export default lessonAdminAPI.reducer

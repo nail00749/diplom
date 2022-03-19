@@ -6,12 +6,14 @@ import {userAPI} from "../services/userAPI";
 import {emptyContentAPI} from "../services/emptyContentAPI";
 import {rtqQueryError} from './middleware/ErrorMiddleware'
 import courseAdminReducer from './reducers/admin/courseSlice'
+import lessonAdminReducer from './reducers/admin/lessonSlice'
 
 const rootReducer = combineReducers({
     userReducer,
     testReducer,
     serviceReducer,
     courseAdminReducer,
+    lessonAdminReducer,
     [userAPI.reducerPath]: userAPI.reducer,
     [emptyContentAPI.reducerPath]: emptyContentAPI.reducer,
 

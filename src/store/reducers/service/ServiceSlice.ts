@@ -1,8 +1,16 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
-const initialState = {
+interface serviceState {
+    showAlert: boolean,
+    error: string,
+    showUsersData: boolean
+}
+
+
+const initialState: serviceState = {
     showAlert: false,
-    error: ''
+    error: '',
+    showUsersData: false
 }
 
 export const serviceSlice = createSlice({
@@ -13,11 +21,18 @@ export const serviceSlice = createSlice({
                 state.showAlert = true
                 state.error = action.payload
             },
-            hideErrorAlert: () => initialState,
+            hideErrorAlert: (state) => {
+                state.error = ''
+                state.showAlert = false
+            },
+            toggleUsersData: (state) => {
+                state.showUsersData = !state.showUsersData
+            }
+
         }
     }
 )
 
-export const {showErrorAlert, hideErrorAlert} = serviceSlice.actions
+export const {showErrorAlert, hideErrorAlert, toggleUsersData} = serviceSlice.actions
 
 export default serviceSlice.reducer

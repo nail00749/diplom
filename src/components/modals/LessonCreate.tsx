@@ -1,100 +1,94 @@
 import React, {FC, useEffect, useState} from 'react';
-import {Dialog, Slide, Typography, IconButton, Box, TextField, Button, Autocomplete} from "@mui/material";
-import {TransitionProps} from '@mui/material/transitions';
+import {Dialog, Typography, IconButton, Box, TextField, Autocomplete} from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import SaveIcon from '@mui/icons-material/Save';
-import {useCreateLessonMutation} from "../../services/adminContentAPI";
+import {useCreateLessonMutation, useUpdateLessonMutation} from "../../services/adminAPI";
 import {useGetAllCoursesQuery} from "../../services/contentAPI";
+import {
+    changeDescription,
+    changeTitle,
+    errorTitleChange,
+    errorDescriptionChange,
+    closeModal,
+    changeCourse,
+    errorCourseChange
+} from "../../store/reducers/admin/lessonSlice";
+import {useAppDispatch, useAppSelector} from "../../hooks/redux";
+import {ICourse} from "../../models/ICourse";
+import {ILesson} from "../../models/ILesson";
+import {LoadingButton} from "@mui/lab";
+import {Transition} from "./Transition";
 
-const Transition = React.forwardRef(function Transition(props: TransitionProps & {
-    children: React.ReactElement;
-}, ref: React.Ref<unknown>) {
-    return <Slide direction = "down" ref = {ref} {...props} />;
-});
-
-interface CourseCreateProps {
-    open: boolean,
-    onClose: () => void
-}
-
-interface CourseField {
-    title: string
-    error: boolean,
-    id?: number
-}
-
-const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
-    const [name, setName] = useState({title: '', error: false});
-    const [about, setAbout] = useState({description: '', error: false});
-    const [course, setCourse] = useState<CourseField>({title: '', error: false});
+const CourseCreate: FC = () => {
+    const {
+        open,
+        isUpdate,
+        title,
+        description,
+        titleError,
+        descriptionError,
+        course,
+        courseError,
+        id
+    } = useAppSelector(state => state.lessonAdminReducer)
+    const dispatch = useAppDispatch()
     const [courseInputValue, setCourseInputValue] = useState('');
-
     const {data: courses} = useGetAllCoursesQuery('')
-    const [create, {isLoading, isError, isSuccess}] = useCreateLessonMutation()
+    const [create, {isLoading: isLoadingCreate, isSuccess: isSuccessCreate}] = useCreateLessonMutation()
+    const [update, {isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate}] = useUpdateLessonMutation()
+
 
     useEffect(() => {
-
-    }, [isSuccess]);
+        dispatch(closeModal())
+    }, [isSuccessCreate, isSuccessUpdate]);
 
 
     const saveLesson = async () => {
         let isError = false
-        if (!name.title) {
+        if (!title) {
             isError = true
-            setName(prev => ({...prev, error: true}))
+            dispatch(errorTitleChange())
         }
-        if (!about.description) {
+        if (!description) {
             isError = true
-            setAbout(prev => ({...prev, error: true}))
+            dispatch(errorDescriptionChange())
         }
-        if (!course.title) {
+        if (!course) {
             isError = true
-            setCourse(prev => ({...prev, error: true}))
+            dispatch(errorCourseChange())
         }
 
         if (isError) {
             return
         }
         const data = {
-            title: name.title,
-            description: about.description,
-            course_id: course.id
+            title,
+            description,
+            course_id: course!.id
         }
-        await create(data)
-        //todo api
-        defaultValues()
-        onClose()
+        if (isUpdate) {
+            await update({...data, id} as ILesson)
+        } else {
+            await create(data)
+        }
+
     };
 
-    const handlerName = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setName(prev => ({...prev, title: e.target.value, error: false}))
-    };
+    const handlerName = (e: React.ChangeEvent<HTMLInputElement>) => dispatch(changeTitle(e.target.value))
 
-    const handlerAbout = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setAbout(prev => ({...prev, description: e.target.value, error: false}))
-    };
+    const handlerAbout = (e: React.ChangeEvent<HTMLInputElement>) => dispatch(changeDescription(e.target.value))
 
-    const handleCourse = (e: any, newValue: CourseField | null) => {
-        setCourse({...course, title: (newValue && newValue.title) || '', id: newValue?.id, error: false})
-    };
+    const handleCourse = (e: any, newValue: ICourse | null) => dispatch(changeCourse(newValue));
 
-    const handleClose = () => {
-        defaultValues()
-        onClose()
-    }
+    const handleClose = () => dispatch(closeModal())
 
-    const defaultValues = () => {
-        setName({title: '', error: false})
-        setAbout({description: '', error: false})
-        setCourse({title: '', error: false})
-    }
+    const mock = () => {}
 
     return (
         <Dialog
             open = {open}
             TransitionComponent = {Transition}
-            onClose = {handleClose}
-
+            onClose = {(isLoadingUpdate || isLoadingCreate) ? mock : handleClose}
         >
             <Box
                 p = {3}
@@ -109,11 +103,12 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
                 >
                     <IconButton
                         onClick = {handleClose}
+                        disabled = {isLoadingCreate || isLoadingUpdate}
                     >
                         <CloseIcon/>
                     </IconButton>
                     <Typography variant = 'h5' component = 'span'>
-                        Create lesson
+                        {`Lesson ${isUpdate ? 'edit' : 'create'}`}
                     </Typography>
                 </Box>
                 <Box mb = {3}>
@@ -122,8 +117,9 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
                         variant = 'filled'
                         required
                         onChange = {handlerName}
-                        value = {name.title}
-                        error = {name.error}
+                        value = {title}
+                        error = {titleError}
+                        disabled = {isLoadingCreate || isLoadingUpdate}
                     />
                 </Box>
                 <Box mb = {3}>
@@ -132,8 +128,9 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
                         variant = 'filled'
                         required
                         onChange = {handlerAbout}
-                        value = {about.description}
-                        error = {about.error}
+                        value = {description}
+                        error = {descriptionError}
+                        disabled = {isLoadingCreate || isLoadingUpdate}
                     />
                 </Box>
                 <Box mb = {3}>
@@ -145,7 +142,7 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
                                 variant = 'filled'
                                 required
                                 fullWidth
-                                error = {course.error}
+                                error = {courseError}
                             />
                         }
                         value = {course}
@@ -155,18 +152,20 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
                         onInputChange = {(e, newValue) => {
                             setCourseInputValue(newValue)
                         }}
-                        getOptionLabel = {(option: CourseField) => (option && option.title) || ''}
+                        getOptionLabel = {(option: ICourse) => (option && option.title) || ''}
                         //renderOption = {(option) => <span>{option.title}</span>}
+                        disabled = {isLoadingCreate || isLoadingUpdate}
                     />
                 </Box>
-                <Button
+                <LoadingButton
+                    loading = {isLoadingCreate || isLoadingUpdate}
                     variant = 'outlined'
                     color = 'success'
                     endIcon = {<SaveIcon/>}
                     onClick = {saveLesson}
                 >
                     Save
-                </Button>
+                </LoadingButton>
 
             </Box>
         </Dialog>

@@ -13,6 +13,6 @@ export const emptyContentAPI = createApi({
             return headers
         }
     }),
-    tagTypes: ['Course', 'Lesson', 'Test'],
+    tagTypes: ['Course', 'Lesson', 'Test', 'Users'],
     endpoints: () => ({}),
 })

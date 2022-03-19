@@ -1,11 +1,11 @@
 import React, {FC, useEffect} from 'react'
 import {Alert, Box, Collapse} from "@mui/material";
-import {useAppDispatch, useTypedSelector} from '../hooks/redux';
+import {useAppDispatch, useAppSelector} from '../hooks/redux';
 import {hideErrorAlert} from "../store/reducers/service/ServiceSlice";
 import {useLocation} from "react-router-dom";
 
 const ServiceAlert: FC = () => {
-    const {error, showAlert} = useTypedSelector(state => state.serviceReducer)
+    const {error, showAlert} = useAppSelector(state => state.serviceReducer)
     const location = useLocation()
     const dispatch = useAppDispatch()
 

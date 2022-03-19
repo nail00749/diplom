@@ -1,7 +1,6 @@
 import React, {FC, useState} from 'react';
 import {
     Dialog,
-    Slide,
     Typography,
     IconButton,
     Box,
@@ -10,22 +9,16 @@ import {
     Grid,
     useMediaQuery, Autocomplete
 } from "@mui/material";
-import {TransitionProps} from '@mui/material/transitions';
 import CloseIcon from '@mui/icons-material/Close';
 import SaveIcon from '@mui/icons-material/Save';
-import {useTypedSelector} from "../../hooks/redux";
+import {useAppSelector} from "../../hooks/redux";
 import {useDispatch} from "react-redux";
 import {addQuestion, resetForm} from "../../store/reducers/admin/testSlice";
 import Question from "../test/Question";
-import {useCreateTestMutation} from "../../services/adminContentAPI";
+import {useCreateTestMutation} from "../../services/adminAPI";
 import {useGetAllLessonsQuery} from "../../services/contentAPI";
 import {ILesson} from "../../models/ILesson";
-
-const Transition = React.forwardRef(function Transition(props: TransitionProps & {
-    children: React.ReactElement;
-}, ref: React.Ref<unknown>) {
-    return <Slide direction = "down" ref = {ref} {...props} />;
-});
+import {Transition} from "./Transition";
 
 interface CourseCreateProps {
     open: boolean,
@@ -40,7 +33,7 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
     const [name, setName] = useState({description: '', error: false});
     const [about, setAbout] = useState({description: '', error: false});
     const [lesson, setLesson] = useState<LessonField>({title: '', error: false});
-    const {questions} = useTypedSelector(state => state.testReducer)
+    const {questions} = useAppSelector(state => state.testReducer)
     const [lessonInputValue, setLessonInputValue] = useState('');
 
     const dispatch = useDispatch()

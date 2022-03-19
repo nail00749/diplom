@@ -1,8 +1,9 @@
 import {emptyContentAPI} from "./emptyContentAPI";
 import {ICourse} from "../models/ICourse";
-import {contentAPI} from "./contentAPI";
+import {ILesson} from "../models/ILesson";
 
-export const contentAdminAPI = emptyContentAPI.injectEndpoints({
+
+export const adminAPI = emptyContentAPI.injectEndpoints({
     endpoints: (build) => ({
         createCourse: build.mutation({
             query: (body) => ({
@@ -28,6 +29,14 @@ export const contentAdminAPI = emptyContentAPI.injectEndpoints({
             }),
             invalidatesTags: ['Lesson']
         }),
+        updateLesson: build.mutation<ILesson, ILesson>({
+            query: (body) => ({
+                url: `/lessons/?lesson_id=${body.id}`,
+                method: 'PATCH',
+                body,
+            }),
+            invalidatesTags: ['Course', 'Lesson']
+        }),
         createTest: build.mutation({
             query: (body) => ({
                 url: '/tests',
@@ -35,6 +44,18 @@ export const contentAdminAPI = emptyContentAPI.injectEndpoints({
                 body
             })
         }),
+        getAllUsers: build.query({
+            query: () => ('/users'),
+            providesTags: ['Users']
+        }),
+        setRole: build.mutation({
+            query: (body) => ({
+                url: `/admin/users/${body.id}`,
+                method: 'PATCH',
+                body
+            }),
+            invalidatesTags: ['Users']
+        })
     }),
     overrideExisting: true
 })
@@ -45,6 +66,9 @@ export const {
     useCreateLessonMutation,
     useCreateTestMutation,
     useUpdateCourseMutation,
-} = contentAdminAPI
+    useUpdateLessonMutation,
+    useGetAllUsersQuery,
+    useSetRoleMutation
+} = adminAPI
 
-export const {reducer, middleware} = contentAPI
+export const {reducer, middleware} = adminAPI
