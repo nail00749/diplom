@@ -4,6 +4,7 @@ import {adminRoutes, authRoute, publicRoute} from '../router/router';
 import {useTypedSelector} from "../hooks/redux";
 import Topbar from "./UI/Topbar";
 import ServiceAlert from "./serviceAlert";
+import AdminModalsContainer from "./modals/AdminModalsContainer";
 
 const AppRouter: FC = () => {
     const {isAuthenticated, user} = useTypedSelector(state => state.userReducer)
@@ -11,6 +12,10 @@ const AppRouter: FC = () => {
     return (
         <BrowserRouter>
             {isAuthenticated && <Topbar/>}
+            {
+                (isAuthenticated && (user && (user.role === 'admin' || user.role === 'teacher')))
+                && <AdminModalsContainer/>
+            }
             <ServiceAlert/>
             {
                 !isAuthenticated ?

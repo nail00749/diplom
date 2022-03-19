@@ -99,6 +99,7 @@ const AuthForm: FC<FormProps> = (props) => {
                             label = "email"
                             autoComplete = {'username'}
                             error = {usernameError}
+                            disabled = {isLoading}
                         />
                     </FormControl>
                 </Box>
@@ -117,6 +118,7 @@ const AuthForm: FC<FormProps> = (props) => {
                                         onClick = {handlerShowPassword}
                                         onMouseDown = {handlerMouseDown}
                                         edge = "end"
+                                        disabled = {isLoading}
                                     >
                                         {showPassword ? <VisibilityOff/> : <Visibility/>}
                                     </IconButton>
@@ -125,6 +127,7 @@ const AuthForm: FC<FormProps> = (props) => {
                             label = "Password"
                             autoComplete = {'current-password'}
                             error = {passwordError}
+                            disabled = {isLoading}
                         />
                     </FormControl>
                 </Box>
@@ -153,6 +156,7 @@ const AuthForm: FC<FormProps> = (props) => {
                         props.setIsLogin()
                     }}
                     variant = 'outlined'
+                    disabled = {isLoading}
                 >
                     {'Sign up'}
                 </Button>

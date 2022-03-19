@@ -101,6 +101,7 @@ const RegisterForm: FC<FormProps> = ({setIsLogin}) => {
                             }
                             label = "email"
                             error = {usernameError}
+                            disabled={isLoading}
                         />
                     </FormControl>
                 </Box>
@@ -126,6 +127,7 @@ const RegisterForm: FC<FormProps> = ({setIsLogin}) => {
                             }
                             label = "Password"
                             error = {passwordError}
+                            disabled={isLoading}
                         />
                     </FormControl>
                 </Box>
@@ -153,27 +155,11 @@ const RegisterForm: FC<FormProps> = ({setIsLogin}) => {
                     onClick = {() => {
                         setIsLogin()
                     }}
+                    disabled={isLoading}
                 >
                     {'Log in'}
                 </Button>
             </Box>
-
-            {
-                /*(isError && error && error?.data) &&
-		        <Collapse
-			        in = {true}
-			        sx = {{
-                        position: 'fixed',
-                        bottom: 50
-                    }}
-		        >
-			        <Alert
-				        severity = 'error'
-			        >
-                        {error.data.detail}
-			        </Alert>
-		        </Collapse>*/
-            }
 
             <RegisterSuccess
                 open = {isOpenSuccess}
