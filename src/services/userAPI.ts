@@ -14,7 +14,7 @@ export const userAPI = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: BaseURL,
         prepareHeaders: (headers) => {
-            const token = localStorage.getItem('token')
+            const token = sessionStorage.getItem('token') || localStorage.getItem('token')
             if (token) {
                 headers.set('Authorization', `Bearer ${token}`)
             }
@@ -29,13 +29,11 @@ export const userAPI = createApi({
                 method: 'POST',
                 body
             }),
-            async onQueryStarted(_, {dispatch, queryFulfilled}) {
+            async onQueryStarted(arg, {dispatch, queryFulfilled}) {
                 dispatch(fetchAuthLoading())
                 try {
                     const {data} = await queryFulfilled
-
-                    localStorage.setItem('token', data.access_token)
-                    dispatch(fetchAuthSuccess())
+                    dispatch(fetchAuthSuccess(data.access_token))
                 } catch (e: any) {
                     dispatch(fetchAuthError((e.error && e.error.data && e.error.data.detail) || 'Oops, unknown error'))
                 }
@@ -59,7 +57,7 @@ export const userAPI = createApi({
                 dispatch(fetchUpdateData(data))
             }
         }),
-        getMeData: build.query({
+        getMeData: build.query<IUser, void>({
             query: () => '/users/me/',
             async onQueryStarted(_, {dispatch, queryFulfilled}) {
                 const {data} = await queryFulfilled

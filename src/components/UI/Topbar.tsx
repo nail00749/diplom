@@ -21,47 +21,45 @@ const Topbar: FC = () => {
         >
             <Toolbar>
                 <NavigationMenu/>
-                {
-                    //todo
-                    <Box
-                        sx = {{
-                            display: 'flex',
-                            justifyContent: 'flex-end',
-                            width: '100%'
-                        }}
-                    >
-                        <Tooltip title = {'open'}>
-                            <IconButton
-                                onClick = {handlerOpenMenu}
-                            >
-                                <AccountCircle/>
-                            </IconButton>
-                        </Tooltip>
-                        <Menu
-                            sx = {{
-                                mt: '30px'
-                            }}
-                            anchorEl = {anchorElUser}
-                            anchorOrigin = {{
-                                vertical: 'top',
-                                horizontal: 'right'
-                            }}
-                            keepMounted
-                            transformOrigin = {{
-                                vertical: 'top',
-                                horizontal: 'right'
-                            }}
-                            open = {Boolean(anchorElUser)}
-                            onClose = {handleCloseMenu}
+                <Box
+                    sx = {{
+                        display: 'flex',
+                        justifyContent: 'flex-end',
+                        width: '100%'
+                    }}
+                >
+                    <Tooltip title = {'open'}>
+                        <IconButton
+                            onClick = {handlerOpenMenu}
                         >
-                            <MenuItem
-                                onClick = {handlerLogOut}
-                            >
-                                <Typography>Log out</Typography>
-                            </MenuItem>
-                        </Menu>
-                    </Box>
-                }
+                            <AccountCircle/>
+                        </IconButton>
+                    </Tooltip>
+                    <Menu
+                        sx = {{
+                            mt: '30px'
+                        }}
+                        anchorEl = {anchorElUser}
+                        anchorOrigin = {{
+                            vertical: 'top',
+                            horizontal: 'right'
+                        }}
+                        keepMounted
+                        transformOrigin = {{
+                            vertical: 'top',
+                            horizontal: 'right'
+                        }}
+                        open = {Boolean(anchorElUser)}
+                        onClose = {handleCloseMenu}
+                    >
+                        <MenuItem
+                            onClick = {handlerLogOut}
+                        >
+                            <Typography>Log out</Typography>
+                        </MenuItem>
+                    </Menu>
+                </Box>
+
             </Toolbar>
         </AppBar>
 

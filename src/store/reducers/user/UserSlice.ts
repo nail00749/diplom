@@ -2,22 +2,21 @@ import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {IUser} from "../../../models/IUser";
 
 interface UserState {
-    user: IUser,
+    user: IUser | null,
     isAuthenticated: boolean,
     isLoading: boolean,
     error: string,
     token: ''
+    saveSession: boolean
 }
 
 const initialState: UserState = {
-    isAuthenticated: false,
+    isAuthenticated: Boolean(sessionStorage.getItem('token')) || Boolean(localStorage.getItem('token')),
     isLoading: false,
-    user: {
-        email: "",
-        avatar_path: null
-    },
+    user: null,
     error: '',
-    token: ''
+    token: '',
+    saveSession: false
 }
 
 export const userSlice = createSlice({
@@ -31,10 +30,14 @@ export const userSlice = createSlice({
             state.isLoading = false
             state.error = action.payload
         },
-        fetchAuthSuccess: (state,) => {
+        fetchAuthSuccess: (state, action: PayloadAction<string>) => {
             state.isLoading = false
             state.error = ''
             state.isAuthenticated = true
+            sessionStorage.setItem('token', action.payload)
+            if (state.saveSession) {
+                localStorage.setItem('token', action.payload)
+            }
         },
         fetchMeData: (state, action: PayloadAction<IUser>) => {
             state.user = action.payload
@@ -42,9 +45,16 @@ export const userSlice = createSlice({
         fetchUpdateData: (state, action) => {
             state.user = {...state.user, ...action.payload}
         },
-        logOut: (state) => {
+        setSaveSession: (state) => {
+            state.saveSession = !state.saveSession
+        },
+        logOut: () => {
             localStorage.clear()
-            Object.assign(state, initialState)
+            sessionStorage.clear()
+            return {
+                ...initialState,
+                isAuthenticated: false
+            }
         }
     }
 })
@@ -55,7 +65,8 @@ export const {
     fetchAuthError,
     fetchMeData,
     fetchUpdateData,
-    logOut
+    logOut,
+    setSaveSession
 } = userSlice.actions
 
 export default userSlice.reducer

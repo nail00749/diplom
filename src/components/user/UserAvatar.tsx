@@ -32,7 +32,7 @@ const UserAvatar: FC = () => {
         >
             <Avatar
                 alt = 'Remy Sharp'
-                src = {BaseURL + user.avatar_path}
+                src = {BaseURL + user!.avatar_path}
                 sx = {{
                     width: 200,
                     height: 200,

@@ -6,14 +6,15 @@ import {
     FormControl,
     OutlinedInput,
     IconButton,
-    InputLabel,
+    InputLabel, Checkbox, FormControlLabel, FormGroup,
 } from "@mui/material";
 import {AccountCircle, VisibilityOff, Visibility} from '@mui/icons-material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import {useLoginMutation} from "../services/userAPI";
 import {validateEmail} from "../utils";
 import {showErrorAlert} from "../store/reducers/service/ServiceSlice";
-import {useAppDispatch} from "../hooks/redux";
+import {useAppDispatch, useAppSelector} from "../hooks/redux";
+import {setSaveSession} from "../store/reducers/user/UserSlice";
 
 type FormProps = {
     setIsLogin: () => void
@@ -27,6 +28,7 @@ const AuthForm: FC<FormProps> = (props) => {
     const [showPassword, setShowPassword] = useState<boolean>(false);
     const [login, {isLoading}] = useLoginMutation()
     const dispatch = useAppDispatch()
+    const {saveSession} = useAppSelector(state => state.userReducer)
 
     const handlerLogin = (e: React.ChangeEvent<HTMLInputElement>) => {
         setUsername(e.target.value);
@@ -144,7 +146,21 @@ const AuthForm: FC<FormProps> = (props) => {
                     >
                         Auth
                     </LoadingButton>
-
+                    <FormGroup
+                        sx = {{
+                            ml: 3
+                        }}
+                    >
+                        <FormControlLabel
+                            control = {
+                                <Checkbox
+                                    checked = {saveSession}
+                                    onChange = {() => dispatch(setSaveSession())}
+                                />
+                            }
+                            label = {'Save'}
+                        />
+                    </FormGroup>
                 </Box>
             </form>
             <Box

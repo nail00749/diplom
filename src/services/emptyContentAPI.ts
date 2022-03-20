@@ -6,7 +6,7 @@ export const emptyContentAPI = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: BaseURL,
         prepareHeaders: (headers) => {
-            const token = localStorage.getItem('token')
+            const token = sessionStorage.getItem('token') || localStorage.getItem('token')
             if (token) {
                 headers.set('Authorization', `Bearer ${token}`)
             }
