@@ -54,7 +54,6 @@ const App = () => {
 
 export default function ToggleColorMode() {
     const [mode, setMode] = useState<'light' | 'dark'>('light');
-
     const colorMode = useMemo(
         () => ({
             toggleColorMode: () => {

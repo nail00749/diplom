@@ -1,13 +1,20 @@
-import React, {FC, useState} from 'react'
-import {AppBar, Box, IconButton, Menu, MenuItem, Toolbar, Tooltip, Typography} from "@mui/material";
+import React, {FC, useEffect, useState} from 'react'
+import {AppBar, Avatar, Box, IconButton, Menu, MenuItem, Toolbar, Tooltip, Typography} from "@mui/material";
 import {AccountCircle} from "@mui/icons-material";
-import {useAppDispatch} from "../../hooks/redux";
+import {useAppDispatch, useAppSelector} from "../../hooks/redux";
 import {logOut} from "../../store/reducers/user/UserSlice";
 import NavigationMenu from "./NavigationMenu";
+import {useGetMeDataQuery} from "../../services/userAPI";
+import {BaseURL} from "../../config";
 
 const Topbar: FC = () => {
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
     const dispatch = useAppDispatch()
+    const {refetch} = useGetMeDataQuery()
+    const {isAuthenticated, user} = useAppSelector(state => state.userReducer)
+    useEffect(() => {
+        refetch()
+    }, [isAuthenticated, refetch]);
 
     const handlerOpenMenu = (e: React.MouseEvent<HTMLElement>) => setAnchorElUser(e.currentTarget)
 
@@ -32,7 +39,14 @@ const Topbar: FC = () => {
                         <IconButton
                             onClick = {handlerOpenMenu}
                         >
-                            <AccountCircle/>
+                            {
+                                user && user.avatar_path ?
+                                    <Avatar
+                                        src = {BaseURL + user.avatar_path}
+                                    />
+                                    :
+                                    <AccountCircle/>
+                            }
                         </IconButton>
                     </Tooltip>
                     <Menu

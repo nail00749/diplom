@@ -1,7 +1,7 @@
 import React, {FC, useEffect, useState} from 'react'
 import {Box, Button, TextField, Typography} from "@mui/material";
 import {useAppSelector} from "../../hooks/redux";
-import {useGetMeDataQuery, useUpdateMutation} from "../../services/userAPI";
+import {useUpdateMutation} from "../../services/userAPI";
 import {LoadingButton} from "@mui/lab";
 import UserAvatar from "./UserAvatar";
 
@@ -19,17 +19,12 @@ const Profile: FC = () => {
         surname: '',
         telegram: ''
     });
-    const {refetch} = useGetMeDataQuery()
+
     const [update, {isSuccess, isLoading}] = useUpdateMutation()
 
     useEffect(() => {
         setIsEdit(false)
     }, [isSuccess])
-
-    useEffect(() => {
-        refetch()
-    }, [isAuthenticated, refetch]);
-
 
     const handlerIsEdit = () => {
         setIsEdit(prev => !prev)
@@ -87,7 +82,7 @@ const Profile: FC = () => {
                             !isEdit ?
                                 <>
                                     <Box
-                                        mr={5}
+                                        mr = {5}
                                     >
                                         <Typography
                                             variant = 'h5'
