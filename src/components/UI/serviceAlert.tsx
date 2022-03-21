@@ -34,7 +34,8 @@ const ServiceAlert: FC = () => {
                         bottom: 50,
                         width: '100vw',
                         display: 'flex',
-                        justifyContent: 'center'
+                        justifyContent: 'center',
+                        zIndex: 9999
                     }}
 				>
 					<Collapse

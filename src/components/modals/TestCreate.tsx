@@ -1,4 +1,4 @@
-import React, {FC, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import {
     Dialog,
     Typography,
@@ -11,93 +11,93 @@ import {
 } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import SaveIcon from '@mui/icons-material/Save';
-import {useAppSelector} from "../../hooks/redux";
-import {useDispatch} from "react-redux";
-import {addQuestion, resetForm} from "../../store/reducers/admin/testSlice";
+import {useAppDispatch, useAppSelector} from "../../hooks/redux";
+import {
+    addQuestion,
+    closeModal,
+    changeDescription,
+    changeLesson,
+    errorDescriptionChange,
+    errorLessonChange
+} from "../../store/reducers/admin/testSlice";
 import Question from "../test/Question";
-import {useCreateTestMutation} from "../../services/adminAPI";
+import {useCreateTestMutation, useUpdateTestMutation} from "../../services/adminAPI";
 import {useGetAllLessonsQuery} from "../../services/contentAPI";
 import {ILesson} from "../../models/ILesson";
 import {Transition} from "./Transition";
+import {showErrorAlert} from "../../store/reducers/service/ServiceSlice";
+import {LoadingButton} from "@mui/lab";
 
-interface CourseCreateProps {
-    open: boolean,
-    onClose: () => void
-}
-
-
-const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
-    const [name, setName] = useState({description: '', error: false});
-    const [about, setAbout] = useState({description: '', error: false});
-    const [lesson, setLesson] = useState<ILesson | null>(null);
-    const {questions} = useAppSelector(state => state.testReducer)
+const CourseCreate: FC = () => {
+    const {
+        open,
+        questions,
+        description,
+        descriptionError,
+        lesson,
+        lessonError,
+        isUpdate
+    } = useAppSelector(state => state.testReducer)
     const [lessonInputValue, setLessonInputValue] = useState('');
-
-    const dispatch = useDispatch()
     const {data: lessons} = useGetAllLessonsQuery()
-    const [create, {isError, isLoading, isSuccess}] = useCreateTestMutation()
-
+    const [create, {isLoading: isLoadingCreate, isSuccess: isSuccessCreate}] = useCreateTestMutation()
+    const [update, {isLoading: isLoadingUpdate, isSuccess: isSuccessUpdate}] = useUpdateTestMutation()
+    const dispatch = useAppDispatch()
     const matches = useMediaQuery('(max-width: 425px)')
+
+    useEffect(() => {
+        dispatch(closeModal())
+    }, [dispatch, isSuccessCreate, isSuccessUpdate])
 
     const saveTest = async () => {
         let isError = false
-        if (!name.description) {
+        if (!description) {
+            dispatch(errorDescriptionChange())
             isError = true
-            setName(prev => ({...prev, error: true}))
         }
-        if (!about.description) {
+        if (!lesson) {
+            dispatch(errorLessonChange())
             isError = true
-            setAbout(prev => ({...prev, error: true}))
         }
-
+        if (!questions || !questions.length) {
+            isError = true
+            dispatch(showErrorAlert('not questions'))
+        }
 
         if (isError) {
             return
         }
-        //todo api
-        defaultValue()
-        dispatch(resetForm())
+
         const data = {
-            lesson_id: lesson!.id,
-            description: about.description,
-            questions: questions
+            description,
+            questions,
+            lesson_id: lesson!.id
         }
-        await create(data)
+        if (isUpdate) {
+            await update(data)
+        } else {
+            await create(data)
+        }
 
 
-        onClose()
     };
 
-    const handlerName = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setName(prev => ({...prev, description: e.target.value, error: false}))
-    };
+    const handlerDescription = (e: React.ChangeEvent<HTMLInputElement>) => dispatch(changeDescription(e.target.value))
 
-    const handlerAbout = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setAbout(prev => ({...prev, description: e.target.value, error: false}))
-    };
+    const handleLesson = (e: any, newValue: ILesson | null) => dispatch(changeLesson(newValue))
 
-    const handleLesson = (e: any, newValue: ILesson | null) => {
-        //setLesson({...lesson, title: (newValue && newValue.title) || '', id: newValue?.id,})
-    };
+    const handlerAdd = () => dispatch(addQuestion())
 
-    const handlerAdd = () => {
-        dispatch(addQuestion())
-    };
+    const handlerClose = () => dispatch(closeModal())
 
-    const closeWindow = () => {
-        defaultValue()
-        onClose()
-    }
-
-    const defaultValue = () => {
-
+    const mock = () => {
     }
 
     return (
         <Dialog
             open = {open}
             TransitionComponent = {Transition}
-            onClose = {closeWindow}
+            onClose = {(isLoadingUpdate || isLoadingCreate) ? mock : handlerClose}
             fullScreen
         >
             <Box
@@ -112,12 +112,13 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
                     mb = {2}
                 >
                     <IconButton
-                        onClick = {closeWindow}
+                        onClick = {handlerClose}
+                        disabled = {isLoadingCreate || isLoadingUpdate}
                     >
                         <CloseIcon/>
                     </IconButton>
                     <Typography variant = 'h5' component = 'span'>
-                        Create test
+                        {`${isUpdate ? 'Edit' : 'Create'} test`}
                     </Typography>
                 </Box>
                 <Grid
@@ -127,26 +128,14 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
                     <Grid item xs = {12} md = {6} lg = {4}>
                         <Box mb = {3}>
                             <TextField
-                                label = 'Name'
-                                variant = 'filled'
-                                required
-                                onChange = {handlerName}
-                                value = {name.description}
-                                error = {name.error}
-                                fullWidth
-                            />
-                        </Box>
-                    </Grid>
-                    <Grid item xs = {12} md = {6} lg = {4}>
-                        <Box mb = {3}>
-                            <TextField
                                 label = 'About'
                                 variant = 'filled'
                                 required
-                                onChange = {handlerAbout}
-                                value = {about.description}
-                                error = {about.error}
+                                onChange = {handlerDescription}
+                                value = {description}
+                                error = {descriptionError}
                                 fullWidth
+                                disabled = {isLoadingCreate || isLoadingUpdate}
                             />
                         </Box>
                     </Grid>
@@ -160,7 +149,8 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
                                         variant = 'filled'
                                         required
                                         fullWidth
-                                        //error = {lesson.error}
+                                        error = {lessonError}
+                                        disabled = {isLoadingCreate || isLoadingUpdate}
                                     />
                                 }
                                 value = {lesson}
@@ -192,19 +182,21 @@ const CourseCreate: FC<CourseCreateProps> = ({open, onClose}) => {
                     <Button
                         variant = 'outlined'
                         onClick = {handlerAdd}
+                        disabled = {isLoadingCreate || isLoadingUpdate}
                     >
                         Add question
                     </Button>
                 </Box>
                 <Box>
-                    <Button
+                    <LoadingButton
+                        loading = {isLoadingCreate || isLoadingUpdate}
                         variant = 'outlined'
                         color = 'success'
                         endIcon = {<SaveIcon/>}
                         onClick = {saveTest}
                     >
                         Save
-                    </Button>
+                    </LoadingButton>
                 </Box>
             </Box>
         </Dialog>

@@ -43,6 +43,13 @@ export const adminAPI = emptyContentAPI.injectEndpoints({
                 body
             })
         }),
+        updateTest: build.mutation({
+            query: (body) => ({
+                url: `/tests/?test_id=${body.id}`,
+                method: 'PATCH',
+                body
+            })
+        }),
         getAllUsers: build.query({
             query: () => ('/users'),
             providesTags: ['Users']
@@ -67,7 +74,8 @@ export const {
     useUpdateCourseMutation,
     useUpdateLessonMutation,
     useGetAllUsersQuery,
-    useSetRoleMutation
+    useSetRoleMutation,
+    useUpdateTestMutation
 } = adminAPI
 
 export const {reducer, middleware} = adminAPI

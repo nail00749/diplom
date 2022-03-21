@@ -1,8 +1,8 @@
 export interface ITest {
-    lesson: string
+    lesson_id: number
     description: string
     questions: IQuestion[]
-
+    id: number
 }
 
 export interface IQuestion {
@@ -13,7 +13,7 @@ export interface IQuestion {
     id?: string
 }
 
-export  interface IAnswer {
+export interface IAnswer {
     text: string,
     is_correct?: boolean,
     id?: string

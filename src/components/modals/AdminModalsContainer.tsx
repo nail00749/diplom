@@ -9,10 +9,7 @@ const AdminModalsContainer: FC = () => {
         <>
             <CourseCreate/>
             <LessonCreate/>
-            <TestCreate
-                open = {false}
-                onClose = {() => {}}
-            />
+            <TestCreate/>
             <UsersData/>
         </>
     )

@@ -1,11 +1,23 @@
 import {Box, Typography} from '@mui/material';
-import React, {FC} from 'react';
-import CourseLink from "./CourseLink";
-import {ICourse} from "../models/ICourse";
-import {useGetAllCoursesQuery} from "../services/contentAPI";
+import React, {FC, ReactElement, useCallback} from 'react';
+import {useAppSelector} from "../hooks/redux";
+import UserCourse from "./Course/UserCourse";
+import TeacherCourse from "./Course/TeacherCourse";
 
 const CourseContainer: FC = () => {
-    const {data: courses} = useGetAllCoursesQuery()
+    const {user} = useAppSelector(state => state.userReducer)
+
+    const roleCourses = useCallback((): ReactElement | null => {
+        if (user) {
+            switch (user.role) {
+                case 'user':
+                    return <UserCourse/>
+                case 'teacher':
+                    return <TeacherCourse/>
+            }
+        }
+        return null
+    }, [user])
 
     return (
         <Box
@@ -23,13 +35,7 @@ const CourseContainer: FC = () => {
                 Courses
             </Typography>
             {
-                courses &&
-                courses.map((course: ICourse) =>
-                    <CourseLink
-                        key = {course.id}
-                        course = {course}
-                    />
-                )
+                roleCourses()
             }
         </Box>
     );

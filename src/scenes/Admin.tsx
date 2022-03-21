@@ -1,17 +1,13 @@
-import React, {FC, useState} from 'react';
+import React, {FC} from 'react';
 import {Box, Button, ButtonGroup, Container} from "@mui/material";
-import TestCreate from "../components/modals/TestCreate";
 import {useAppDispatch} from "../hooks/redux";
 import {openModal as openCourse} from "../store/reducers/admin/courseSlice";
 import {openModal as openLesson} from "../store/reducers/admin/lessonSlice";
+import {openModal as openTest} from "../store/reducers/admin/testSlice";
 import {toggleUsersData} from "../store/reducers/service/ServiceSlice";
 
 const Admin: FC = () => {
     const dispatch = useAppDispatch()
-    const [isTestModal, setIsTestModal] = useState<boolean>(false);
-
-
-    const onCloseTest = () => setIsTestModal(false)
 
     return (
         <>
@@ -40,7 +36,7 @@ const Admin: FC = () => {
                         <Box mb = {2}>
                             <Button
                                 variant = 'contained'
-                                onClick = {() => setIsTestModal(prev => !prev)}
+                                onClick = {() => dispatch(openTest())}
                             >
                                 Create test
                             </Button>
@@ -59,10 +55,6 @@ const Admin: FC = () => {
                 </Container>
             </Box>
 
-            <TestCreate
-                open = {isTestModal}
-                onClose = {onCloseTest}
-            />
         </>
     );
 };

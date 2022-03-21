@@ -1,26 +1,35 @@
-import React, {FC, useEffect} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import {Box, Button, Typography} from "@mui/material";
 import {useNavigate, useParams} from "react-router-dom";
-import {openModal} from "../store/reducers/admin/lessonSlice";
-import {useGetAllCoursesQuery, useGetLessonQuery} from "../services/contentAPI";
-import {useAppDispatch} from "../hooks/redux";
+import {openModal as openLessonModal} from "../store/reducers/admin/lessonSlice";
+import {useGetAllCoursesQuery, useGetAllLessonsQuery, useGetLessonQuery} from "../services/contentAPI";
+import {useAppDispatch, useAppSelector} from "../hooks/redux";
+import PassTest from "../components/modals/PassTest";
+import {openModal as openTestModal} from "../store/reducers/admin/testSlice";
 
 const Lesson: FC = () => {
     const {lessonId} = useParams()
     const navigate = useNavigate()
     const {data: lesson} = useGetLessonQuery(String(lessonId))
     const {data: courses} = useGetAllCoursesQuery()
+    const {data: lessons} = useGetAllLessonsQuery()
+    const {user} = useAppSelector(state => state.userReducer)
     const dispatch = useAppDispatch()
+    const [openTest, setOpenTest] = useState(false)
 
     useEffect(() => {
         if (!lessonId) {
             navigate('/')
         }
-    }, [])
+    }, [lessonId, navigate])
 
-    const handlerEdit = () => {
+    const handlerTestModal = () => {
+        setOpenTest(prev => !prev)
+    }
+
+    const handlerLessonEdit = () => {
         if (lesson) {
-            dispatch(openModal({
+            dispatch(openLessonModal({
                 lesson,
                 courses,
                 isUpdate: true,
@@ -28,36 +37,60 @@ const Lesson: FC = () => {
         }
     }
 
+    const handlerTestEdit = () => {
+        if (lesson && lesson.tests && lesson.tests.length) {
+            dispatch(openTestModal({
+                isUpdate: true,
+                test: lesson.tests[0],
+                lessons
+            }))
+        }
+    }
+
     return (
         <Box>
-            <Button
-                variant = 'outlined'
-                onClick = {handlerEdit}
-            >
-                Edit lesson
-            </Button>
+            <Box>
+                {
+                    (user && (user.role === 'teacher' || user.role === 'admin')) &&
+					<>
+						<Button
+							variant = 'outlined'
+							onClick = {handlerLessonEdit}
+						>
+							Edit lesson
+						</Button>
+						<Button
+							variant = 'outlined'
+							onClick = {handlerTestEdit}
+						>
+							Edit test
+						</Button>
+					</>
+                }
+            </Box>
             <Box>
                 {
                     lesson &&
 					<>
 						<Typography>{lesson.title}</Typography>
 						<Typography>{lesson.description}</Typography>
-						<Box>
-                            {
-                                /*lesson.lessons && lesson.lessons.map(item =>
-                                    <Box>
-                                        <Link
-                                            to = {`/lesson/${item.id}`}
-                                        >
-                                            {item.title}
-                                        </Link>
-                                    </Box>
-                                )*/
-                            }
-						</Box>
+						<Button
+							variant = 'outlined'
+							onClick = {handlerTestModal}
+						>
+							Pass test
+						</Button>
 					</>
                 }
             </Box>
+            {
+                <PassTest
+                    open = {openTest}
+                    onClose = {handlerTestModal}
+
+                />
+            }
+
         </Box>
     );
 };

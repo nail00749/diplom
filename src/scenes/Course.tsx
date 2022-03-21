@@ -15,7 +15,7 @@ const Course: FC = () => {
         if (!courseId) {
             navigate('/')
         }
-    }, [])
+    }, [courseId, navigate])
 
     const handlerEdit = () => {
         if (course) {

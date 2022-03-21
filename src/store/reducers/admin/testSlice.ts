@@ -1,13 +1,27 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {IAnswer, IQuestion} from "../../../models/ITest";
+import {IAnswer, IQuestion, ITest} from "../../../models/ITest";
+import {ILesson} from "../../../models/ILesson";
 
 
 export interface TestState {
+    open: boolean
     questions: IQuestion[]
+    description: string
+    descriptionError: boolean
+    isUpdate: boolean | undefined
+    id?: number
+    lesson: ILesson | null
+    lessonError: boolean
 }
 
 const initialState: TestState = {
-    questions: []
+    open: false,
+    questions: [],
+    description: '',
+    descriptionError: false,
+    isUpdate: false,
+    lesson: null,
+    lessonError: false
 }
 
 interface ITextChange {
@@ -21,10 +35,42 @@ interface IAnswerPayload {
     value?: string
 }
 
+interface openPayload {
+    lessons: ILesson[] | null | undefined
+    isUpdate: boolean | undefined
+    test: ITest
+}
+
 export const testSlice = createSlice({
     name: 'testCreate',
     initialState,
     reducers: {
+        openModal: (state, action: PayloadAction<openPayload | undefined>) => {
+            if (action.payload) {
+                const {test, lessons, isUpdate} = action.payload
+                state.description = test.description
+                const lesson = lessons?.find(l => l.id === test.lesson_id)
+                state.lesson = lesson as ILesson
+                state.questions = test.questions
+                state.isUpdate = isUpdate
+            }
+            state.open = true
+        },
+        closeModal: () => initialState,
+        changeDescription: (state, action: PayloadAction<string>) => {
+            state.description = action.payload
+            state.descriptionError = false
+        },
+        errorDescriptionChange: (state) => {
+            state.descriptionError = true
+        },
+        changeLesson: (state, action: PayloadAction<ILesson | null>) => {
+            state.lesson = action.payload
+            state.lessonError = false
+        },
+        errorLessonChange: (state) => {
+            state.lessonError = true
+        },
         addQuestion: (state) => {
             const question: IQuestion = {
                 text: '',
@@ -48,7 +94,6 @@ export const testSlice = createSlice({
         multipleChange: (state, action: PayloadAction<number>) => {
             state.questions[action.payload].is_multiple = !state.questions[action.payload].is_multiple
         },
-        resetForm: () => initialState,
         addAnswer: (state, action: PayloadAction<number>) => {
             const answer: IAnswer = {
                 text: '',
@@ -70,7 +115,8 @@ export const testSlice = createSlice({
             const answers = [...state.questions[action.payload.indexQuestion].answers]
             answers[action.payload.indexAnswer].is_correct = !answers[action.payload.indexAnswer].is_correct
             state.questions[action.payload.indexQuestion].answers = answers
-        }
+        },
+
     }
 })
 
@@ -78,13 +124,18 @@ export const {
     addQuestion,
     textQuestion,
     deleteQuestion,
-    resetForm,
+    closeModal,
     extensionChange,
     multipleChange,
     addAnswer,
     deleteAnswer,
     textAnswer,
-    correctAnswer
+    correctAnswer,
+    changeDescription,
+    changeLesson,
+    errorDescriptionChange,
+    errorLessonChange,
+    openModal
 } = testSlice.actions
 
 export default testSlice.reducer

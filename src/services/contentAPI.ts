@@ -1,6 +1,7 @@
 import {ICourse} from "../models/ICourse";
 import {emptyContentAPI} from "./emptyContentAPI";
 import {ILesson} from "../models/ILesson";
+import {ISubscribation} from "../models/ISubscribation";
 
 
 export const contentAPI = emptyContentAPI.injectEndpoints({
@@ -18,6 +19,9 @@ export const contentAPI = emptyContentAPI.injectEndpoints({
         }),
         getLesson: build.query<ILesson, string>({
             query: (id) => `/lessons/${id}`,
+        }),
+        getAllSubscribes: build.query<ISubscribation[], void>({
+            query: () => '/courses'
         })
     }),
     overrideExisting: true
@@ -28,7 +32,8 @@ export const {
     useGetAllCoursesQuery,
     useGetCourseQuery,
     useGetAllLessonsQuery,
-    useGetLessonQuery
+    useGetLessonQuery,
+    useGetAllSubscribesQuery,
 } = contentAPI
 
 export const {reducer, middleware} = contentAPI
