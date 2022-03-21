@@ -1,7 +1,7 @@
 import React, {FC, useEffect} from 'react'
 import {Alert, Box, Collapse} from "@mui/material";
-import {useAppDispatch, useAppSelector} from '../hooks/redux';
-import {hideErrorAlert} from "../store/reducers/service/ServiceSlice";
+import {useAppDispatch, useAppSelector} from '../../hooks/redux';
+import {hideErrorAlert} from "../../store/reducers/service/ServiceSlice";
 import {useLocation} from "react-router-dom";
 
 const ServiceAlert: FC = () => {
@@ -17,11 +17,11 @@ const ServiceAlert: FC = () => {
                 }
             }, 5000)
         }
-    }, [showAlert])
+    }, [dispatch, showAlert])
 
     useEffect(() => {
         dispatch(hideErrorAlert())
-    }, [location])
+    }, [dispatch, location])
 
 
     return (

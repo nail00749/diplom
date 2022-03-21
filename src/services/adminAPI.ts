@@ -2,7 +2,6 @@ import {emptyContentAPI} from "./emptyContentAPI";
 import {ICourse} from "../models/ICourse";
 import {ILesson} from "../models/ILesson";
 
-
 export const adminAPI = emptyContentAPI.injectEndpoints({
     endpoints: (build) => ({
         createCourse: build.mutation({

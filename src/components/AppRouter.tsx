@@ -3,7 +3,7 @@ import {Route, Routes, BrowserRouter, Navigate} from "react-router-dom";
 import {adminRoutes, authRoute, publicRoute} from '../router/router';
 import {useAppSelector} from "../hooks/redux";
 import Topbar from "./UI/Topbar";
-import ServiceAlert from "./serviceAlert";
+import ServiceAlert from "./UI/serviceAlert";
 import AdminModalsContainer from "./modals/AdminModalsContainer";
 
 const AppRouter: FC = () => {

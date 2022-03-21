@@ -28,7 +28,7 @@ const Profile: FC = () => {
 
     useEffect(() => {
         refetch()
-    }, [isAuthenticated]);
+    }, [isAuthenticated, refetch]);
 
 
     const handlerIsEdit = () => {
@@ -79,16 +79,15 @@ const Profile: FC = () => {
                             display: 'flex',
                             flexDirection: 'column',
                             alignItems: 'center',
-                            width: '100%'
+                            width: '100%',
+                            my: 2
                         }}
 					>
                         {
                             !isEdit ?
                                 <>
                                     <Box
-                                        ml = {4}
-                                        my = {2}
-                                        alignSelf = 'flex-start'
+                                        mr={5}
                                     >
                                         <Typography
                                             variant = 'h5'
