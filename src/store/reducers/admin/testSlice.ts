@@ -103,18 +103,26 @@ export const testSlice = createSlice({
             state.questions[action.payload].answers.push(answer)
         },
         deleteAnswer: (state, action: PayloadAction<IAnswerPayload>) => {
-            state.questions[action.payload.indexQuestion].answers = [...state.questions[action.payload.indexQuestion].answers]
-                .filter((_, i) => i !== action.payload.indexAnswer)
+            const {indexQuestion: i, indexAnswer: j} = action.payload
+            state.questions[action.payload.indexQuestion].answers = state.questions[i].answers
+                .filter((_, k) => k !== j)
         },
         textAnswer: (state, action: PayloadAction<IAnswerPayload>) => {
-            const answers = [...state.questions[action.payload.indexQuestion].answers]
-            answers[action.payload.indexAnswer].text = action.payload.value!
-            state.questions[action.payload.indexQuestion].answers = answers
+            const {indexQuestion: i, indexAnswer: j} = action.payload
+            const answers = state.questions[i].answers
+            answers[j].text = action.payload.value!
+            state.questions[i].answers = answers
         },
         correctAnswer: (state, action: PayloadAction<IAnswerPayload>) => {
-            const answers = [...state.questions[action.payload.indexQuestion].answers]
-            answers[action.payload.indexAnswer].is_correct = !answers[action.payload.indexAnswer].is_correct
-            state.questions[action.payload.indexQuestion].answers = answers
+            const {indexQuestion: i, indexAnswer: j} = action.payload
+            const answers = state.questions[i].answers
+            answers[j].is_correct = !answers[j].is_correct
+            const count = answers.reduce((acc, curr) => curr.is_correct ? acc + 1 : acc, 0)
+
+            if (count > 1) {
+                state.questions[i].is_multiple = true
+            }
+            state.questions[i].answers = answers
         },
 
     }

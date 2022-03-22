@@ -84,10 +84,11 @@ const Lesson: FC = () => {
                 }
             </Box>
             {
+                (lesson && lesson.tests && lesson.tests.length) &&
                 <PassTest
                     open = {openTest}
                     onClose = {handlerTestModal}
-
+                    test={lesson.tests[0]}
                 />
             }
 

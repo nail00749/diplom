@@ -7,9 +7,9 @@ import {
     extensionChange,
     multipleChange,
     addAnswer
-} from "../../store/reducers/admin/testSlice";
-import {useAppDispatch} from "../../hooks/redux";
-import {IQuestion} from "../../models/ITest";
+} from "../../../store/reducers/admin/testSlice";
+import {useAppDispatch} from "../../../hooks/redux";
+import {IQuestion} from "../../../models/ITest";
 import Answer from "./Answer";
 
 
@@ -61,6 +61,7 @@ const Question: FC<QuestionProps> = ({index, value}) => {
                             disabled = {value.is_extended  || Boolean((value.answers && value.answers.length))}
                             control = {
                                 <Checkbox
+                                    checked={value.is_extended}
                                     value = {value.is_extended}
                                     onChange = {handlerExtension}
                                 />
@@ -71,6 +72,7 @@ const Question: FC<QuestionProps> = ({index, value}) => {
                             disabled = {value.is_extended}
                             control = {
                                 <Checkbox
+                                    checked = {value.is_multiple}
                                     value = {value.is_multiple}
                                     onChange = {handlerMultiple}
                                 />

@@ -1,9 +1,9 @@
 import React, {FC} from 'react'
 import {Box, Checkbox, FormControlLabel, IconButton, TextField} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import {IAnswer} from "../../models/ITest";
-import {useAppDispatch} from "../../hooks/redux";
-import {correctAnswer, deleteAnswer, textAnswer} from "../../store/reducers/admin/testSlice";
+import {IAnswer} from "../../../models/ITest";
+import {useAppDispatch} from "../../../hooks/redux";
+import {correctAnswer, deleteAnswer, textAnswer} from "../../../store/reducers/admin/testSlice";
 
 interface AnswerProps {
     indexQuestion: number,
@@ -40,6 +40,7 @@ const Answer: FC<AnswerProps> = ({indexQuestion, value, indexAnswer}) => {
                 <FormControlLabel
                     control = {
                         <Checkbox
+                            checked = {value.is_correct}
                             value = {value.is_correct}
                             onChange = {handlerCorrect}
                         />
