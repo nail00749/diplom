@@ -46,7 +46,9 @@ const Course: FC = () => {
 						<Box>
                             {
                                 course.lessons && course.lessons.map(item =>
-                                    <Box>
+                                    <Box
+                                        key={item.id}
+                                    >
                                         <Link
                                             to = {`/lesson/${item.id}`}
                                         >

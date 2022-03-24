@@ -5,7 +5,6 @@ import TeacherCourse from "./Course/TeacherCourse";
 import {useGetMeDataQuery} from "../services/userAPI";
 
 const CourseContainer: FC = () => {
-    //const {user} = useAppSelector(state => state.userReducer)
     const {data: user} = useGetMeDataQuery()
 
     const roleCourses = useCallback((): ReactElement | null => {

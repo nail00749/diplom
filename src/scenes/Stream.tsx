@@ -2,7 +2,6 @@ import {Box, Button} from '@mui/material';
 import React, {FC, useRef, useState, useEffect} from 'react';
 import Webcam from "react-webcam";
 
-
 const Stream: FC = () => {
     const [isActiveWebCam, setIsActiveWebCam] = useState<boolean>(false);
     const [isActiveScreen, setIsActiveScreen] = useState<boolean>(false);
@@ -58,6 +57,7 @@ const Stream: FC = () => {
     }
 
     const handleStopScreen = () => {
+        //todo fix after changing location
         if (stream && stream.current && screenRef && screenRef.current) {
             let tracks = stream.current.getTracks()
             tracks.forEach(t => t.stop())

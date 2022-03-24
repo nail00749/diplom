@@ -22,11 +22,13 @@ const RegisterSuccess: FC<RegisterSuccessProps> = ({open, setClose, setPageLogin
         setTimeout(() => setPageLogin(), 500)
     }
 
+    const handlerClose = () => setClose(false)
+
     return (
         <Dialog
             open = {open}
             TransitionComponent = {Transition}
-            onClose = {() => setClose(false)}
+            onClose = {handlerClose}
         >
             <Container>
                 <Box

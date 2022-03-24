@@ -9,6 +9,14 @@ import {toggleUsersData} from "../store/reducers/service/ServiceSlice";
 const Admin: FC = () => {
     const dispatch = useAppDispatch()
 
+    const handlerCourseModal = () => dispatch(openCourse())
+
+    const handlerLessonModal = () => dispatch(openLesson())
+
+    const handlerTestModal = () => dispatch(openTest())
+
+    const handlerUsersModal = () => dispatch(toggleUsersData())
+
     return (
         <>
             <Box>
@@ -20,7 +28,7 @@ const Admin: FC = () => {
                         <Box mb = {2}>
                             <Button
                                 variant = 'contained'
-                                onClick = {() => dispatch(openCourse())}
+                                onClick = {handlerCourseModal}
                             >
                                 Create course
                             </Button>
@@ -28,7 +36,7 @@ const Admin: FC = () => {
                         <Box mb = {2}>
                             <Button
                                 variant = 'contained'
-                                onClick = {() => dispatch(openLesson())}
+                                onClick = {handlerLessonModal}
                             >
                                 Create lesson
                             </Button>
@@ -36,7 +44,7 @@ const Admin: FC = () => {
                         <Box mb = {2}>
                             <Button
                                 variant = 'contained'
-                                onClick = {() => dispatch(openTest())}
+                                onClick = {handlerTestModal}
                             >
                                 Create test
                             </Button>
@@ -44,7 +52,7 @@ const Admin: FC = () => {
                         <Box mb = {2}>
                             <Button
                                 variant = 'contained'
-                                onClick = {() => dispatch(toggleUsersData())}
+                                onClick = {handlerUsersModal}
                             >
                                 Edit users data
                             </Button>

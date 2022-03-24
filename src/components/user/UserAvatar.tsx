@@ -12,7 +12,6 @@ const Input = styled('input')({
 const UserAvatar: FC = () => {
     const [focus, setFocus] = useState(false);
     const [update] = useUpdateAvatarMutation()
-    //const {user} = useAppSelector(state => state.userReducer)
     const {data: user} = useGetMeDataQuery()
 
     const handlerFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -23,11 +22,12 @@ const UserAvatar: FC = () => {
         }
     }
 
+    const boxFocus = () => setFocus(prev => !prev)
 
     return (
         <Box
-            onMouseEnter = {() => setFocus(true)}
-            onMouseLeave = {() => setFocus(false)}
+            onMouseEnter = {boxFocus}
+            onMouseLeave = {boxFocus}
             position = 'relative'
         >
             <Avatar

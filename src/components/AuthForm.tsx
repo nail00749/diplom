@@ -20,7 +20,7 @@ type FormProps = {
     setIsLogin: () => void
 }
 
-const AuthForm: FC<FormProps> = (props) => {
+const AuthForm: FC<FormProps> = ({setIsLogin}) => {
     const [username, setUsername] = useState<string>('');
     const [usernameError, setUsernameError] = useState(false);
     const [password, setPassword] = useState<string>('');
@@ -71,6 +71,8 @@ const AuthForm: FC<FormProps> = (props) => {
     const handlerMouseDown = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
     }
+
+    const handlerSaveSession = () => dispatch(setSaveSession())
 
     return (
         <>
@@ -155,7 +157,7 @@ const AuthForm: FC<FormProps> = (props) => {
                             control = {
                                 <Checkbox
                                     checked = {saveSession}
-                                    onChange = {() => dispatch(setSaveSession())}
+                                    onChange = {handlerSaveSession}
                                 />
                             }
                             label = {'Save'}
@@ -169,7 +171,7 @@ const AuthForm: FC<FormProps> = (props) => {
             >
                 <Button
                     onClick = {() => {
-                        props.setIsLogin()
+                        setIsLogin()
                     }}
                     variant = 'outlined'
                     disabled = {isLoading}

@@ -6,7 +6,6 @@ import {
     Dialog, FormControl,
     FormControlLabel,
     FormGroup,
-    FormLabel,
     IconButton, Radio, RadioGroup,
     TextField,
     Typography
@@ -38,7 +37,9 @@ const PassTest: FC<PassTestProps> = ({open, onClose, test}) => {
                 <Box>
                     {
                         question.answers.map((a, j) =>
-                            <FormGroup>
+                            <FormGroup
+                                key = {a.id}
+                            >
                                 <FormControlLabel control = {<Checkbox/>} label = {a.text}/>
                             </FormGroup>
                         )
@@ -52,7 +53,12 @@ const PassTest: FC<PassTestProps> = ({open, onClose, test}) => {
                         {
                             <RadioGroup>
                                 {question.answers.map((a, j) =>
-                                    <FormControlLabel value={a.text} control = {<Radio/>} label = {a.text}/>
+                                    <FormControlLabel
+                                        key = {a.id}
+                                        value = {a.text}
+                                        control = {<Radio/>}
+                                        label = {a.text}
+                                    />
                                 )}
                             </RadioGroup>
                         }
@@ -98,6 +104,7 @@ const PassTest: FC<PassTestProps> = ({open, onClose, test}) => {
                     {
                         test.questions.map((q, i) =>
                             <Box
+                                key={q.id}
                                 mb = {2}
                                 border = {'1px solid'}
                             >

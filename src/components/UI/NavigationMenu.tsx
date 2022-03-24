@@ -27,6 +27,8 @@ const NavigationMenu: FC = () => {
         setState(open);
     };
 
+    const handlerIndexActive = (index: number) => () => setSelectedLinkIndex(index)
+
     return (
         <Box>
             <>
@@ -62,7 +64,7 @@ const NavigationMenu: FC = () => {
                                     >
                                         <ListItemButton
                                             selected = {selectedLinkIndex === index}
-                                            onClick = {() => setSelectedLinkIndex(index)}
+                                            onClick = {handlerIndexActive(index)}
                                         >
                                             {
                                                 item.icon &&
@@ -86,7 +88,7 @@ const NavigationMenu: FC = () => {
                                     >
                                         <ListItemButton
                                             selected = {selectedLinkIndex === index + linksNavigationUser.length}
-                                            onClick = {() => setSelectedLinkIndex(index + linksNavigationUser.length)}
+                                            onClick = {handlerIndexActive(index + linksNavigationUser.length)}
                                         >
                                             {
                                                 item.icon &&
