@@ -3,9 +3,10 @@ import {Box, Button, Typography} from "@mui/material";
 import {useNavigate, useParams} from "react-router-dom";
 import {openModal as openLessonModal} from "../store/reducers/admin/lessonSlice";
 import {useGetAllCoursesQuery, useGetAllLessonsQuery, useGetLessonQuery} from "../services/contentAPI";
-import {useAppDispatch, useAppSelector} from "../hooks/redux";
+import {useAppDispatch} from "../hooks/redux";
 import PassTest from "../components/modals/PassTest";
 import {openModal as openTestModal} from "../store/reducers/admin/testSlice";
+import {useGetMeDataQuery} from "../services/userAPI";
 
 const Lesson: FC = () => {
     const {lessonId} = useParams()
@@ -13,7 +14,8 @@ const Lesson: FC = () => {
     const {data: lesson} = useGetLessonQuery(String(lessonId))
     const {data: courses} = useGetAllCoursesQuery()
     const {data: lessons} = useGetAllLessonsQuery()
-    const {user} = useAppSelector(state => state.userReducer)
+    //const {user} = useAppSelector(state => state.userReducer)
+    const {data: user} = useGetMeDataQuery()
     const dispatch = useAppDispatch()
     const [openTest, setOpenTest] = useState(false)
 

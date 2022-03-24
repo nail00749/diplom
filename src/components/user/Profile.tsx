@@ -1,7 +1,7 @@
 import React, {FC, useEffect, useState} from 'react'
 import {Box, Button, TextField, Typography} from "@mui/material";
 import {useAppSelector} from "../../hooks/redux";
-import {useUpdateMutation} from "../../services/userAPI";
+import {useGetMeDataQuery, useUpdateMutation} from "../../services/userAPI";
 import {LoadingButton} from "@mui/lab";
 import UserAvatar from "./UserAvatar";
 
@@ -12,7 +12,8 @@ interface IUserEdit {
 }
 
 const Profile: FC = () => {
-    const {user, isAuthenticated} = useAppSelector(state => state.userReducer)
+    const {isAuthenticated} = useAppSelector(state => state.userReducer)
+    const {data: user} = useGetMeDataQuery()
     const [isEdit, setIsEdit] = useState(false);
     const [userData, setUserData] = useState<IUserEdit>({
         name: '',
@@ -86,6 +87,7 @@ const Profile: FC = () => {
                                     >
                                         <Typography
                                             variant = 'h5'
+                                            color='text.primary'
                                         >
                                             {`Email: ${user.email}`}
                                         </Typography>
@@ -93,6 +95,7 @@ const Profile: FC = () => {
                                             user.name &&
 											<Typography
 												variant = 'h6'
+												color='text.primary'
 											>
                                                 {`Name: ${user.name}`}
 											</Typography>
@@ -101,6 +104,7 @@ const Profile: FC = () => {
                                             user.surname &&
 											<Typography
 												variant = 'h6'
+												color='text.primary'
 											>
                                                 {`Surname: ${user.surname}`}
 											</Typography>
@@ -109,6 +113,7 @@ const Profile: FC = () => {
                                             user.telegram &&
 											<Typography
 												variant = 'h6'
+												color='text.primary'
 											>
                                                 {`Telegram: ${user.telegram}`}
 											</Typography>

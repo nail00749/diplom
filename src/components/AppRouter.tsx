@@ -1,20 +1,26 @@
-import React, {FC} from 'react';
+import React, {FC, Suspense} from 'react';
 import {Route, Routes, BrowserRouter, Navigate} from "react-router-dom";
 import {adminRoutes, authRoute, publicRoute} from '../router/router';
 import {useAppSelector} from "../hooks/redux";
 import Topbar from "./UI/Topbar";
 import ServiceAlert from "./UI/serviceAlert";
-import AdminModalsContainer from "./modals/AdminModalsContainer";
+import {useGetMeDataQuery} from "../services/userAPI";
+//import AdminModalsContainer from "./modals/AdminModalsContainer";
+const AdminModalsContainer = React.lazy(() => import('./modals/AdminModalsContainer'))
 
 const AppRouter: FC = () => {
-    const {isAuthenticated, user} = useAppSelector(state => state.userReducer)
+    const {isAuthenticated} = useAppSelector(state => state.userReducer)
+    const {data: user} = useGetMeDataQuery(undefined, {skip: !isAuthenticated})
 
     return (
         <BrowserRouter>
             {isAuthenticated && <Topbar/>}
             {
                 (isAuthenticated && (user && (user.role === 'admin' || user.role === 'teacher')))
-                && <AdminModalsContainer/>
+                &&
+				<Suspense fallback = {null}>
+					<AdminModalsContainer/>
+				</Suspense>
             }
             <ServiceAlert/>
             {

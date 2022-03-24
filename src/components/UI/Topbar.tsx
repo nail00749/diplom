@@ -10,8 +10,8 @@ import {BaseURL} from "../../config";
 const Topbar: FC = () => {
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
     const dispatch = useAppDispatch()
-    const {refetch} = useGetMeDataQuery()
-    const {isAuthenticated, user} = useAppSelector(state => state.userReducer)
+    const {data: user, refetch} = useGetMeDataQuery()
+    const {isAuthenticated} = useAppSelector(state => state.userReducer)
     useEffect(() => {
         refetch()
     }, [isAuthenticated, refetch]);

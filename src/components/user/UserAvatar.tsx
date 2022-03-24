@@ -2,8 +2,7 @@ import React, {FC, useState} from 'react'
 import {Avatar, Box, IconButton} from "@mui/material";
 import {PhotoCamera} from "@mui/icons-material";
 import {styled} from '@mui/material/styles';
-import {useUpdateAvatarMutation} from "../../services/userAPI";
-import {useAppSelector} from "../../hooks/redux";
+import {useGetMeDataQuery, useUpdateAvatarMutation} from "../../services/userAPI";
 import {BaseURL} from "../../config";
 
 const Input = styled('input')({
@@ -13,7 +12,8 @@ const Input = styled('input')({
 const UserAvatar: FC = () => {
     const [focus, setFocus] = useState(false);
     const [update] = useUpdateAvatarMutation()
-    const {user} = useAppSelector(state => state.userReducer)
+    //const {user} = useAppSelector(state => state.userReducer)
+    const {data: user} = useGetMeDataQuery()
 
     const handlerFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {

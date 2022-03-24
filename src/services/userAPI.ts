@@ -4,8 +4,6 @@ import {
     fetchAuthError,
     fetchAuthLoading,
     fetchAuthSuccess,
-    fetchMeData,
-    fetchUpdateData
 } from "../store/reducers/user/UserSlice";
 import {IUser} from "../models/IUser";
 
@@ -52,17 +50,11 @@ export const userAPI = createApi({
                 method: "PATCH",
                 body
             }),
-            async onQueryStarted(_, {dispatch, queryFulfilled}) {
-                const {data} = await queryFulfilled
-                dispatch(fetchUpdateData(data))
-            }
+            invalidatesTags: ['User']
         }),
         getMeData: build.query<IUser, void>({
             query: () => '/users/me/',
-            async onQueryStarted(_, {dispatch, queryFulfilled}) {
-                const {data} = await queryFulfilled
-                dispatch(fetchMeData(data))
-            }
+            providesTags: ['User']
         }),
         updateAvatar: build.mutation<IUser, FormData>({
             query: (body) => ({
@@ -70,14 +62,17 @@ export const userAPI = createApi({
                 method: "PATCH",
                 body
             }),
-            async onQueryStarted(_, {dispatch, queryFulfilled}) {
-                const {data} = await queryFulfilled
-                dispatch(fetchUpdateData(data))
-            }
+            invalidatesTags: ['User']
         })
     })
 })
 
-export const {useLoginMutation, useRegisterMutation, useGetMeDataQuery, useUpdateMutation, useUpdateAvatarMutation} = userAPI
+export const {
+    useLoginMutation,
+    useRegisterMutation,
+    useGetMeDataQuery,
+    useUpdateMutation,
+    useUpdateAvatarMutation
+} = userAPI
 
 export const {reducer, middleware} = userAPI
