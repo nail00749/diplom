@@ -14,6 +14,7 @@ const Stream: FC = () => {
 
     useEffect(() => {
         return () => {
+            handleStopScreen()
             stream.current?.removeEventListener('inactive', handleStopScreen)
         }
     }, [])

@@ -1,11 +1,12 @@
 import {Box, Typography} from '@mui/material';
 import React, {FC, ReactElement, useCallback} from 'react';
-import {useAppSelector} from "../hooks/redux";
 import UserCourse from "./Course/UserCourse";
 import TeacherCourse from "./Course/TeacherCourse";
+import {useGetMeDataQuery} from "../services/userAPI";
 
 const CourseContainer: FC = () => {
-    const {user} = useAppSelector(state => state.userReducer)
+    //const {user} = useAppSelector(state => state.userReducer)
+    const {data: user} = useGetMeDataQuery()
 
     const roleCourses = useCallback((): ReactElement | null => {
         if (user) {

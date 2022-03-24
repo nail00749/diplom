@@ -1,7 +1,8 @@
-import React, {FC} from 'react';
-import CourseContainer from "../components/CourseContainer";
-import {Grid, useMediaQuery} from "@mui/material";
+import React, {FC, Suspense} from 'react';
+import {CircularProgress, Grid, useMediaQuery} from "@mui/material";
 import Profile from "../components/user/Profile";
+
+const CourseContainer = React.lazy(() => import("../components/CourseContainer"))
 
 const Main: FC = () => {
     const matches = useMediaQuery('(max-width: 425px)')
@@ -25,7 +26,9 @@ const Main: FC = () => {
                 xs = {12}
                 md = {4}
             >
-                <CourseContainer/>
+                <Suspense fallback = {<CircularProgress/>}>
+                    <CourseContainer/>
+                </Suspense>
             </Grid>
             {/*<Grid
                 item
