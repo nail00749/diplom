@@ -31,6 +31,7 @@ const CourseContainer: FC = () => {
             <Typography
                 component = 'h3'
                 mb = {3}
+                color='text.primary'
             >
                 Courses
             </Typography>

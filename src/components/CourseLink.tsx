@@ -1,7 +1,7 @@
 import React, {FC} from 'react';
 import {Box} from "@mui/material";
 import {ICourse} from "../models/ICourse";
-import {Link} from "react-router-dom";
+import StyleLink from "./UI/StyleLink";
 
 interface CourseLinkProps {
     course: ICourse
@@ -9,8 +9,9 @@ interface CourseLinkProps {
 
 
 const CourseLink: FC<CourseLinkProps> = ({course}) => {
+
     return (
-        <Link
+        <StyleLink
             to = {`/course/${course.id}`}
         >
             <Box
@@ -23,7 +24,7 @@ const CourseLink: FC<CourseLinkProps> = ({course}) => {
             >
                 {course.title}
             </Box>
-        </Link>
+        </StyleLink>
     );
 };
 

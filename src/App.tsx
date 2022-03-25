@@ -3,6 +3,7 @@ import AppRouter from "./components/AppRouter";
 import {createTheme, ThemeProvider} from '@mui/material/styles';
 import {CssBaseline, PaletteMode, Box} from "@mui/material";
 import {grey} from '@mui/material/colors';
+import './config/index.css'
 
 export const ColorModeContext = React.createContext({
     toggleColorMode: () => {

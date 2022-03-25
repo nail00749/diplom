@@ -1,5 +1,4 @@
 import React, {FC, useState} from 'react';
-import {Link} from 'react-router-dom'
 import {
     Box,
     SwipeableDrawer,
@@ -7,12 +6,13 @@ import {
     ListItemIcon,
     ListItemText,
     ListItemButton,
-    IconButton
+    IconButton,
 } from '@mui/material';
 import DehazeIcon from '@mui/icons-material/Dehaze';
 import {linksNavigationUser, linksNavigationAdmin} from "../../router/router";
 import SwitchToggleTheme from "./SwitchToggleTheme";
 import {useGetMeDataQuery} from "../../services/userAPI";
+import StyleLink from "./StyleLink";
 
 const NavigationMenu: FC = () => {
     const [state, setState] = useState<boolean>(false);
@@ -58,7 +58,7 @@ const NavigationMenu: FC = () => {
                         <List>
                             {
                                 linksNavigationUser.map((item, index) =>
-                                    <Link
+                                    <StyleLink
                                         key = {item.text}
                                         to = {item.link}
                                     >
@@ -73,16 +73,17 @@ const NavigationMenu: FC = () => {
 												</ListItemIcon>
                                             }
                                             <ListItemText
+                                                color = 'text.primary'
                                                 primary = {item.text}
                                             />
                                         </ListItemButton>
-                                    </Link>
+                                    </StyleLink>
                                 )
                             }
                             {
                                 (user && (user.role === 'teacher' || user.role === 'admin')) &&
                                 linksNavigationAdmin.map((item, index) =>
-                                    <Link
+                                    <StyleLink
                                         key = {item.text}
                                         to = {item.link}
                                     >
@@ -100,7 +101,7 @@ const NavigationMenu: FC = () => {
                                                 primary = {item.text}
                                             />
                                         </ListItemButton>
-                                    </Link>
+                                    </StyleLink>
                                 )
                             }
                         </List>
