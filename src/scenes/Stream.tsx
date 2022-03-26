@@ -1,6 +1,7 @@
 import {Box, Button} from '@mui/material';
 import React, {FC, useRef, useState, useEffect} from 'react';
 import Webcam from "react-webcam";
+import {ReactFlvPlayer} from "@asurraa/react-ts-flv-player";
 
 const Stream: FC = () => {
     const [isActiveWebCam, setIsActiveWebCam] = useState<boolean>(false);
@@ -11,12 +12,41 @@ const Stream: FC = () => {
     const screenRef = useRef<HTMLVideoElement | null>(null)
     const stream = useRef<MediaStream | null>(null)
 
+    const [url, setUrl] = useState('')
+
     useEffect(() => {
         return () => {
             handleStopScreen()
             stream.current?.removeEventListener('inactive', handleStopScreen)
         }
     }, [])
+
+    const connectWebRtC = async () => {
+        try {
+            const rtcp = new RTCPeerConnection()
+            const offer = await rtcp.createOffer()
+
+
+            const data = {
+                sdp: offer.sdp,
+                streamurl: 'webrtc://192.168.0.13/live/livestream',
+                clienttip: null,
+                tid: Number(parseInt(String(new Date().getTime() * Math.random() * 100))).toString(16).substr(0, 7)
+            }
+            const resp = await fetch('https://192.168.0.77:8088/rtc/v1/publish/', {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            console.log(resp)
+            setUrl('https://192.168.0.13:8080/live/livestream.flv')
+
+        } catch (e) {
+            console.log(e)
+        }
+    }
 
     const handleStartCaptureClick = React.useCallback(async () => {
         await setIsActiveWebCam(true)
@@ -28,7 +58,6 @@ const Stream: FC = () => {
             mediaRecorderRef.current.start();
         }
     }, [webcamRef, setCapturing, mediaRecorderRef]);
-
 
     const handleStopCaptureClick = React.useCallback(() => {
         setIsActiveWebCam(false)
@@ -45,9 +74,11 @@ const Stream: FC = () => {
                     },
                     audio: false
                 };
-                stream.current = await navigator.mediaDevices.getDisplayMedia(displayMediaOptions as DisplayMediaStreamConstraints)
-                stream.current.addEventListener('inactive', handleStopScreen)
-                screenRef.current.srcObject = stream.current
+                //stream.current = await navigator.mediaDevices.getDisplayMedia(displayMediaOptions as DisplayMediaStreamConstraints)
+                //stream.current.addEventListener('inactive', handleStopScreen)
+                //screenRef.current.srcObject
+
+                //stream.current .srcObject
                 setIsActiveScreen(true)
             }
         } catch (e) {
@@ -100,20 +131,36 @@ const Stream: FC = () => {
                             Stop screen
                         </Button>
                         : <Button
-                            onClick = {handleStartScreen}
+                            //onClick = {handleStartScreen}
+                            onClick = {connectWebRtC}
                         >
                             Start screen
                         </Button>
                 }
             </Box>
-            <video
+            {/*<video
                 style = {{
                     width: 400,
                     height: 300
                 }}
                 ref = {screenRef}
                 autoPlay
-            />
+            />*/}
+
+            {
+                url &&
+                <ReactFlvPlayer
+                    url = {url}
+                    isMuted = {false}
+                    isLive = {true}
+                    showControls = {false}
+                    enableStashBuffer = {true}
+                    videoProps = {{
+                        autoPlay: false
+                    }}
+                />
+            }
+
 
         </>
     );
